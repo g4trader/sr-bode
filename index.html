@@ -21,15 +21,17 @@
 
         #game-container {
             width: 100%;
-            height: 100vh;
+            min-height: 100vh;
             position: relative;
             display: flex;
             flex-direction: column;
+            background: radial-gradient(circle at top, rgba(20, 28, 48, 0.65) 0%, rgba(4, 7, 15, 1) 65%);
         }
 
         #canvas-container {
             width: 100%;
-            height: 60%;
+            flex: 1 1 55%;
+            min-height: 280px;
             position: relative;
             background: #04070f;
         }
@@ -41,12 +43,14 @@
 
         #ui-container {
             width: 100%;
-            height: 40%;
+            flex: 1 1 45%;
+            min-height: 320px;
             background: rgba(4, 4, 6, 0.94);
-            padding: 20px;
+            padding: clamp(16px, 2.5vw, 28px);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            gap: clamp(16px, 2vw, 28px);
         }
 
         #dialog-box {
@@ -211,24 +215,53 @@
 
         #title-screen {
             position: absolute;
-            top: 0;
-            left: 0;
+            inset: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at center, rgba(40, 40, 40, 0.18) 0%, rgba(0, 0, 0, 0.95) 70%);
+            background: radial-gradient(circle at center, rgba(22, 28, 46, 0.88) 0%, rgba(3, 6, 12, 0.97) 70%);
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 1000;
-            text-align: center;
-            padding: 20px;
+            padding: clamp(20px, 4vw, 48px);
+            backdrop-filter: blur(2px);
+        }
+
+        #title-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: clamp(20px, 4vw, 48px);
+            max-width: min(960px, 100%);
+        }
+
+        #title-hero {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: clamp(24px, 5vw, 56px);
+            flex-wrap: wrap;
+            width: 100%;
+        }
+
+        #title-image {
+            width: clamp(220px, 28vw, 360px);
+            max-width: 100%;
+            height: auto;
+            filter: drop-shadow(0 16px 32px rgba(0, 0, 0, 0.6));
+        }
+
+        #title-text {
+            display: flex;
+            flex-direction: column;
+            gap: clamp(16px, 3vw, 28px);
+            text-align: left;
+            max-width: 420px;
         }
 
         #title-screen h1 {
-            font-size: 68px;
-            letter-spacing: 12px;
-            margin-bottom: 40px;
+            font-size: clamp(42px, 6vw, 72px);
+            letter-spacing: clamp(4px, 1vw, 14px);
             text-transform: uppercase;
             color: #fafafa;
             text-shadow: 0 0 20px rgba(255, 255, 255, 0.25);
@@ -244,30 +277,126 @@
             }
         }
 
-        #title-screen p {
-            font-size: 18px;
-            letter-spacing: 6px;
-            margin-bottom: 60px;
-            opacity: 0.85;
+        #title-tagline {
+            font-size: clamp(18px, 2.5vw, 24px);
+            line-height: 1.5;
+            letter-spacing: clamp(1px, 0.6vw, 4px);
+            opacity: 0.9;
             text-transform: uppercase;
         }
 
+        #title-description {
+            font-size: clamp(16px, 2vw, 20px);
+            line-height: 1.6;
+            color: rgba(240, 240, 240, 0.85);
+        }
+
         #start-button {
-            background: transparent;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.16) 100%);
             border: 1px solid rgba(255, 255, 255, 0.35);
             color: #f2f2f2;
             padding: 18px 48px;
-            font-size: 20px;
+            font-size: clamp(18px, 2vw, 22px);
             font-weight: 600;
-            letter-spacing: 4px;
-            border-radius: 2px;
+            letter-spacing: clamp(3px, 0.8vw, 5px);
+            border-radius: 12px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
         }
 
         #start-button:hover {
-            background: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.25);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.24) 100%);
+            box-shadow: 0 18px 32px rgba(0, 0, 0, 0.45);
+            transform: translateY(-2px);
+        }
+
+        #start-button:active {
+            transform: translateY(0);
+        }
+
+        #title-instructions {
+            font-size: clamp(13px, 1.4vw, 15px);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.65);
+            text-align: center;
+        }
+
+        #title-instructions strong {
+            color: #FFD700;
+        }
+
+        @media (max-width: 1080px) {
+            #ui-container {
+                min-height: 280px;
+            }
+
+            #stats {
+                flex-wrap: wrap;
+                gap: 14px;
+            }
+        }
+
+        @media (max-width: 820px) {
+            #game-container {
+                min-height: 100dvh;
+            }
+
+            #canvas-container {
+                min-height: 220px;
+                flex: 1 1 50%;
+            }
+
+            #ui-container {
+                flex: 1 1 50%;
+                padding: clamp(16px, 5vw, 24px);
+                gap: clamp(14px, 3vw, 24px);
+            }
+
+            #title-hero {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            #title-text {
+                text-align: center;
+                align-items: center;
+            }
+        }
+
+        @media (max-width: 560px) {
+            body {
+                font-size: 14px;
+            }
+
+            #title-screen h1 {
+                font-size: clamp(34px, 10vw, 42px);
+            }
+
+            #title-tagline {
+                letter-spacing: clamp(0.5px, 1vw, 2px);
+            }
+
+            #start-button {
+                width: min(320px, 85vw);
+                padding: 14px 20px;
+            }
+
+            #title-instructions {
+                letter-spacing: 1px;
+            }
+
+            #dialog-box {
+                font-size: 16px;
+                padding: 18px;
+            }
+
+            .choice-button {
+                padding: 12px 18px;
+                font-size: 15px;
+            }
         }
 
         .hidden {
@@ -279,9 +408,22 @@
     <div id="game-container">
         <!-- Tela de Título -->
         <div id="title-screen">
-            <h1>🎮 JOGO DO SENHOR BODE 🎮</h1>
-            <p>Versão HTML - Navegador</p>
-            <button id="start-button" onclick="startGame()">🎯 INICIAR JOGO</button>
+            <div id="title-content">
+                <div id="title-hero">
+                    <img id="title-image" src="assets/img/srbode.png" alt="Ilustração do personagem Senhor Bode">
+                    <div id="title-text">
+                        <h1>Jogo do Senhor Bode</h1>
+                        <p id="title-tagline">A jornada lendária começa agora</p>
+                        <p id="title-description">
+                            Explore a floresta, faça escolhas estratégicas e descubra onde o Senhor Bode se esconde. Cada decisão aproxima ou afasta você do final perfeito.
+                        </p>
+                    </div>
+                </div>
+                <button id="start-button" onclick="startGame()">🚀 Iniciar Jornada</button>
+                <div id="title-instructions">
+                    <strong>Toque</strong> na tela ou <strong>clique</strong> para começar
+                </div>
+            </div>
         </div>
 
         <!-- Container do Canvas 3D -->
