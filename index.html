@@ -1673,37 +1673,97 @@
             const scene = gameState.scene;
             clearScene();
 
-            scene.background = new THREE.Color(0x0c0c0f);
-            addCommonLights(scene, { intensity: 1.2, warm: false });
+            // Ambiente noturno com cidade ao fundo
+            scene.background = new THREE.Color(0x0a0d15);
+            scene.fog = new THREE.FogExp2(0x0a0d15, 0.08);
 
-            const spotlight = new THREE.SpotLight(0xffffff, 1.1, 40, Math.PI / 4, 0.3, 1);
-            spotlight.position.set(0, 10, 4);
-            spotlight.target.position.set(0, 0, -4);
-            scene.add(spotlight);
-            scene.add(spotlight.target);
+            // Iluminação dramática para a luta
+            const mainLight = new THREE.DirectionalLight(0xffd9a3, 1.5);
+            mainLight.position.set(5, 12, 8);
+            mainLight.castShadow = true;
+            mainLight.shadow.mapSize.set(2048, 2048);
+            mainLight.shadow.camera.near = 0.5;
+            mainLight.shadow.camera.far = 50;
+            mainLight.shadow.camera.left = -15;
+            mainLight.shadow.camera.right = 15;
+            mainLight.shadow.camera.top = 15;
+            mainLight.shadow.camera.bottom = -15;
+            scene.add(mainLight);
 
-            const floor = createGround(24, 18, 0x141313);
+            const rimLight = new THREE.PointLight(0xffaa44, 1.2, 30, 1.5);
+            rimLight.position.set(-8, 8, -5);
+            scene.add(rimLight);
+
+            const ambientFill = new THREE.HemisphereLight(0x2a3a4f, 0x0a0d15, 0.6);
+            scene.add(ambientFill);
+
+            // Chão com textura de estrada/cidade
+            const floor = createGround(30, 25, 0x1a1a1f);
             scene.add(floor);
 
-            const fogLayer = new THREE.Mesh(
-                new THREE.PlaneGeometry(24, 18),
-                new THREE.MeshStandardMaterial({ color: 0x1a1a1f, transparent: true, opacity: 0.25 })
+            // Muros/portões da cidade ao fundo
+            const cityWall = new THREE.Mesh(
+                new THREE.BoxGeometry(20, 8, 1.5),
+                new THREE.MeshStandardMaterial({ 
+                    color: 0x2a2a2f, 
+                    roughness: 0.85,
+                    metalness: 0.1
+                })
             );
-            fogLayer.position.y = 0.05;
+            cityWall.position.set(0, 4, -10);
+            cityWall.castShadow = true;
+            cityWall.receiveShadow = true;
+            scene.add(cityWall);
+
+            // Portões da cidade
+            const gateLeft = new THREE.Mesh(
+                new THREE.BoxGeometry(2, 6, 0.3),
+                new THREE.MeshStandardMaterial({ 
+                    color: 0x3a2a1a, 
+                    roughness: 0.8,
+                    metalness: 0.2
+                })
+            );
+            gateLeft.position.set(-3, 3, -9.8);
+            gateLeft.castShadow = true;
+            scene.add(gateLeft);
+
+            const gateRight = gateLeft.clone();
+            gateRight.position.x = 3;
+            scene.add(gateRight);
+
+            // Janelas iluminadas na parede da cidade
+            for (let i = -2; i <= 2; i++) {
+                const window = new THREE.Mesh(
+                    new THREE.PlaneGeometry(0.8, 0.8),
+                    new THREE.MeshStandardMaterial({
+                        color: 0xffd28b,
+                        emissive: 0xffaa44,
+                        emissiveIntensity: 1.2
+                    })
+                );
+                window.position.set(i * 2.5, 5, -9.5);
+                scene.add(window);
+            }
+
+            // Névoa no chão
+            const fogLayer = new THREE.Mesh(
+                new THREE.PlaneGeometry(30, 25),
+                new THREE.MeshStandardMaterial({ 
+                    color: 0x1a1a2f, 
+                    transparent: true, 
+                    opacity: 0.3 
+                })
+            );
+            fogLayer.position.y = 0.1;
             fogLayer.rotation.x = -Math.PI / 2;
             scene.add(fogLayer);
 
-            const background = new THREE.Mesh(
-                new THREE.BoxGeometry(24, 12, 0.5),
-                new THREE.MeshStandardMaterial({ color: 0x111015, roughness: 0.9 })
-            );
-            background.position.set(0, 6, -9);
-            scene.add(background);
-
-            setCameraPose(new THREE.Vector3(0, 2.3, 10), new THREE.Vector3(0, 1.6, -2));
-            scene.userData.cameraBase = new THREE.Vector3(0, 2.3, 10);
-            scene.userData.cameraLook = new THREE.Vector3(0, 1.6, -2);
-            scene.userData.cameraTarget = new THREE.Vector3(0, 1.6, -2);
+            // Câmera inicial - vista lateral da arena
+            setCameraPose(new THREE.Vector3(0, 3.5, 8), new THREE.Vector3(0, 1.5, -3));
+            scene.userData.cameraBase = new THREE.Vector3(0, 3.5, 8);
+            scene.userData.cameraLook = new THREE.Vector3(0, 1.5, -3);
+            scene.userData.cameraTarget = new THREE.Vector3(0, 1.5, -3);
         }
 
         async function lutarBodeCavalo() {
@@ -1712,88 +1772,171 @@
             setAmbient(null);
             const scene = gameState.scene;
 
+            // Câmera inicial - vista dramática
+            setCameraPose(new THREE.Vector3(0, 3.5, 8), new THREE.Vector3(0, 1.5, -3));
             mostrarDialogo('Você finalmente chega à cidade! Mas o Senhor Bode te alcança...');
             audioManager.playEffect('perigo');
             await new Promise(resolve => setTimeout(resolve, 2000));
 
+            // Senhor Bode entra em cena
             const bode = criarModeloBode();
-            bode.scale.set(1.25, 1.25, 1.25);
-            bode.position.set(-2.2, 0, -3);
+            bode.scale.set(1.3, 1.3, 1.3);
+            bode.position.set(-4, 0, -6);
             scene.add(bode);
 
-            mostrarDialogo('O Senhor Bode se aproxima com fúria, seus olhos amarelos brilhando na escuridão...');
-            await animateModelMove(bode, bode.position.clone(), new THREE.Vector3(-0.5, 0, -3.5), 1.8);
-            audioManager.playEffect('perigo');
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            const bodeGlow = new THREE.PointLight(0xfcdc6b, 2.5, 20, 1.8);
+            bodeGlow.position.set(-4, 2.5, -6);
+            scene.add(bodeGlow);
 
+            mostrarDialogo('O Senhor Bode se aproxima com fúria, seus olhos amarelos brilhando na escuridão...');
+            
+            // Animação de aproximação do Bode com rotação
+            const bodeStart = bode.position.clone();
+            const bodeMid = new THREE.Vector3(-1.5, 0, -3.5);
+            await animateModelMove(bode, bodeStart, bodeMid, 2.0);
+            bode.rotation.y = Math.PI / 4;
+            audioManager.playEffect('perigo');
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            // Câmera se move para mostrar melhor a ação
+            await animateFirstPersonMove([
+                {
+                    position: new THREE.Vector3(-2, 2.8, 6),
+                    lookAt: new THREE.Vector3(-1, 1.5, -3)
+                }
+            ], { duration: 1.5 });
+
+            // Sr. Cavalo entra em cena
             const cavalo = criarModeloCavalo();
-            cavalo.scale.set(1.1, 1.1, 1.1);
-            cavalo.position.set(3.2, 0, -3.2);
+            cavalo.scale.set(1.2, 1.2, 1.2);
+            cavalo.position.set(4, 0, -6);
             scene.add(cavalo);
+
+            const cavaloGlow = new THREE.PointLight(0x7ec6ff, 2.0, 20, 1.8);
+            cavaloGlow.position.set(4, 2.5, -6);
+            scene.add(cavaloGlow);
 
             mostrarDialogo('De repente, o Sr. Cavalo surge em sua defesa! O confronto final começa!');
             audioManager.playEffect('coleta');
-            await animateModelMove(cavalo, cavalo.position.clone(), new THREE.Vector3(1.2, 0, -3.2), 2.0);
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            // Cavalo avança com movimento dinâmico
+            await animateModelMove(cavalo, cavalo.position.clone(), new THREE.Vector3(1.5, 0, -3.5), 2.2);
+            cavalo.rotation.y = -Math.PI / 4;
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            // Câmera muda para vista frontal da luta
+            await animateFirstPersonMove([
+                {
+                    position: new THREE.Vector3(0, 3, 5),
+                    lookAt: new THREE.Vector3(0, 1.5, -3)
+                }
+            ], { duration: 1.5 });
 
             mostrarDialogo('A batalha épica entre o Senhor Bode e o Sr. Cavalo se inicia!');
-            await new Promise(resolve => setTimeout(resolve, 1800));
-
-            // Sequência de luta
-            mostrarDialogo('O Senhor Bode ataca primeiro!');
-            await animateModelMove(bode, bode.position.clone(), new THREE.Vector3(0.2, 0, -3.8), 1.2);
-            audioManager.playEffect('perigo');
-            await new Promise(resolve => setTimeout(resolve, 1000));
-
-            mostrarDialogo('O Sr. Cavalo esquiva e contra-ataca!');
-            await animateModelMove(cavalo, cavalo.position.clone(), new THREE.Vector3(0.0, 0, -3.5), 1.5);
-            await animateModelMove(bode, bode.position.clone(), new THREE.Vector3(-0.8, 0, -4.0), 1.3);
-            audioManager.playEffect('coleta');
-            await new Promise(resolve => setTimeout(resolve, 1200));
-
-            mostrarDialogo('O Senhor Bode recua, mas não desiste!');
-            await animateModelMove(bode, bode.position.clone(), new THREE.Vector3(-0.3, 0, -3.6), 1.4);
-            await new Promise(resolve => setTimeout(resolve, 1000));
-
-            mostrarDialogo('O Sr. Cavalo avança com determinação!');
-            await animateModelMove(cavalo, cavalo.position.clone(), new THREE.Vector3(-0.5, 0, -3.6), 1.6);
-            await animateModelMove(bode, bode.position.clone(), new THREE.Vector3(-1.2, 0, -4.2), 1.5);
-            audioManager.playEffect('coleta');
             await new Promise(resolve => setTimeout(resolve, 1500));
 
-            mostrarDialogo('O confronto se intensifica! Ambos lutam com todas as forças!');
-            await animateModelMove(bode, bode.position.clone(), new THREE.Vector3(-0.6, 0, -3.8), 1.3);
-            await animateModelMove(cavalo, cavalo.position.clone(), new THREE.Vector3(-0.8, 0, -3.7), 1.4);
-            await animateModelMove(bode, bode.position.clone(), new THREE.Vector3(-1.5, 0, -4.5), 1.6);
+            // Sequência de luta com animações mais dinâmicas
+            mostrarDialogo('O Senhor Bode ataca primeiro!');
+            bode.rotation.y = Math.PI / 6;
+            await animateModelMove(bode, bode.position.clone(), new THREE.Vector3(0.5, 0.3, -3.8), 1.0);
+            bode.position.y = 0.3; // Salto
             audioManager.playEffect('perigo');
-            await new Promise(resolve => setTimeout(resolve, 1800));
+            await new Promise(resolve => setTimeout(resolve, 300));
+            bode.position.y = 0; // Aterrissa
+            await new Promise(resolve => setTimeout(resolve, 700));
+
+            mostrarDialogo('O Sr. Cavalo esquiva e contra-ataca!');
+            cavalo.rotation.y = -Math.PI / 3;
+            await animateModelMove(cavalo, cavalo.position.clone(), new THREE.Vector3(0.2, 0, -3.5), 1.2);
+            await animateModelMove(bode, bode.position.clone(), new THREE.Vector3(-1.2, 0, -4.2), 1.0);
+            bode.rotation.y = -Math.PI / 4;
+            audioManager.playEffect('coleta');
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            mostrarDialogo('O Senhor Bode recua, mas não desiste!');
+            bode.rotation.y = Math.PI / 2;
+            await animateModelMove(bode, bode.position.clone(), new THREE.Vector3(-0.5, 0, -3.6), 1.2);
+            await new Promise(resolve => setTimeout(resolve, 800));
+
+            mostrarDialogo('O Sr. Cavalo avança com determinação!');
+            cavalo.rotation.y = -Math.PI / 2;
+            await animateModelMove(cavalo, cavalo.position.clone(), new THREE.Vector3(-0.3, 0.2, -3.6), 1.4);
+            cavalo.position.y = 0.2; // Salto do cavalo
+            await animateModelMove(bode, bode.position.clone(), new THREE.Vector3(-1.8, 0, -4.5), 1.3);
+            await new Promise(resolve => setTimeout(resolve, 300));
+            cavalo.position.y = 0;
+            audioManager.playEffect('coleta');
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            // Câmera se move para ângulo mais dinâmico
+            await animateFirstPersonMove([
+                {
+                    position: new THREE.Vector3(2, 2.5, 4),
+                    lookAt: new THREE.Vector3(-0.5, 1.5, -3.5)
+                }
+            ], { duration: 1.2 });
+
+            mostrarDialogo('O confronto se intensifica! Ambos lutam com todas as forças!');
+            bode.rotation.y = Math.PI / 3;
+            await animateModelMove(bode, bode.position.clone(), new THREE.Vector3(-0.8, 0.2, -3.8), 1.1);
+            bode.position.y = 0.2;
+            cavalo.rotation.y = -Math.PI / 4;
+            await animateModelMove(cavalo, cavalo.position.clone(), new THREE.Vector3(-0.5, 0, -3.7), 1.2);
+            await new Promise(resolve => setTimeout(resolve, 300));
+            bode.position.y = 0;
+            await animateModelMove(bode, bode.position.clone(), new THREE.Vector3(-2.0, 0, -4.8), 1.4);
+            audioManager.playEffect('perigo');
+            await new Promise(resolve => setTimeout(resolve, 1200));
+
+            // Câmera volta para vista frontal
+            await animateFirstPersonMove([
+                {
+                    position: new THREE.Vector3(0, 3.5, 5),
+                    lookAt: new THREE.Vector3(-1, 1.5, -4)
+                }
+            ], { duration: 1.0 });
 
             mostrarDialogo('O Sr. Cavalo desfere o golpe final!');
-            await animateModelMove(cavalo, cavalo.position.clone(), new THREE.Vector3(-1.2, 0, -3.8), 1.8);
-            await animateModelMove(bode, bode.position.clone(), new THREE.Vector3(-3.5, 0, -6.5), 2.2);
+            cavalo.rotation.y = -Math.PI / 2;
+            await animateModelMove(cavalo, cavalo.position.clone(), new THREE.Vector3(-1.0, 0.4, -3.8), 1.6);
+            cavalo.position.y = 0.4; // Salto alto
             audioManager.playEffect('coleta');
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            await new Promise(resolve => setTimeout(resolve, 400));
+            cavalo.position.y = 0;
+            bode.rotation.y = Math.PI;
+            await animateModelMove(bode, bode.position.clone(), new THREE.Vector3(-4.5, 0, -7.0), 1.8);
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            // Bode cai derrotado
+            bode.rotation.x = Math.PI / 2;
+            bode.position.y = -0.2;
+            await new Promise(resolve => setTimeout(resolve, 1000));
 
             mostrarDialogo('Após uma luta intensa, o Sr. Cavalo derrota o Senhor Bode e salva a todos!');
-            await animateModelMove(bode, bode.position.clone(), new THREE.Vector3(-5.0, 0, -8.0), 2.5);
+            scene.remove(bodeGlow);
             await new Promise(resolve => setTimeout(resolve, 2000));
 
             // Remover o bode derrotado da cena
             scene.remove(bode);
 
+            // Câmera se move para mostrar a entrada na cidade
+            await animateFirstPersonMove([
+                {
+                    position: new THREE.Vector3(0, 2.5, 6),
+                    lookAt: new THREE.Vector3(0, 1.5, -9)
+                }
+            ], { duration: 2.0 });
+
             mostrarDialogo('Com o Senhor Bode derrotado, você e o Sr. Cavalo finalmente podem entrar na cidade em segurança.');
             await new Promise(resolve => setTimeout(resolve, 2500));
 
             mostrarDialogo('Vocês caminham em direção aos portões da cidade, deixando a floresta amaldiçoada para trás...');
-            await animateModelMove(cavalo, cavalo.position.clone(), new THREE.Vector3(0.0, 0, -1.5), 2.5);
+            cavalo.rotation.y = 0;
+            await animateModelMove(cavalo, cavalo.position.clone(), new THREE.Vector3(0.0, 0, -8.5), 2.5);
             await new Promise(resolve => setTimeout(resolve, 1500));
 
-            // Ajustar câmera para mostrar a entrada na cidade
-            setCameraPose(new THREE.Vector3(0, 2.5, 8), new THREE.Vector3(0, 1.5, -1));
-            await new Promise(resolve => setTimeout(resolve, 1000));
-
             mostrarDialogo('Os portões da cidade se abrem, recebendo vocês com segurança e esperança.');
-            await animateModelMove(cavalo, cavalo.position.clone(), new THREE.Vector3(0.0, 0, 0.5), 2.8);
+            await animateModelMove(cavalo, cavalo.position.clone(), new THREE.Vector3(0.0, 0, -10.5), 2.8);
             audioManager.playEffect('coleta');
             await new Promise(resolve => setTimeout(resolve, 2000));
 
