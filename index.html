@@ -3974,7 +3974,9 @@
                     break;
                 }
 
-                if (gameState.distancia_cidade >= 220 && gameState.proximidade_sr_bode <= 12) {
+                // Quando a distância até a cidade chegar a 0, começa a luta
+                const distanciaAteCidade = 220 - gameState.distancia_cidade;
+                if (distanciaAteCidade <= 0 && gameState.proximidade_sr_bode <= 12) {
                     resgatado = true;
                     break;
                 }
