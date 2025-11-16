@@ -1279,91 +1279,144 @@
                 roughness: 0.3,
                 metalness: 0.15
             });
+            const armMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0x181311, 
+                roughness: 0.9,
+                metalness: 0.02
+            });
+            const hoofMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0x120b09, 
+                roughness: 0.7,
+                metalness: 0.05
+            });
 
-            const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.7, 2.2, 18), furMaterial);
-            torso.position.y = 1.8;
+            // Corpo humanoide/bípede mais realista
+            const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.65, 1.8, 18), furMaterial);
+            torso.position.y = 1.5;
             group.add(torso);
 
-            const chest = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.55, 1.1, 16), accentFur);
-            chest.position.set(0, 2.1, 0.1);
+            const chest = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.55, 0.9, 16), accentFur);
+            chest.position.set(0, 1.85, 0.1);
             group.add(chest);
 
-            const head = new THREE.Mesh(new THREE.SphereGeometry(0.45, 20, 18), furMaterial);
-            head.position.set(0, 2.9, 0.3);
+            // Cintura/pelve
+            const pelvis = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.5, 0.4, 16), furMaterial);
+            pelvis.position.y = 0.7;
+            group.add(pelvis);
+
+            // Cabeça de bode mais realista
+            const head = new THREE.Mesh(new THREE.SphereGeometry(0.42, 20, 18), furMaterial);
+            head.position.set(0, 2.6, 0.25);
             group.add(head);
 
-            const snout = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.24, 0.6, 16), accentFur);
+            // Focinho mais detalhado
+            const snout = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.22, 0.55, 16), accentFur);
             snout.rotation.x = Math.PI / 2;
-            snout.position.set(0, 2.75, 0.7);
+            snout.position.set(0, 2.5, 0.65);
             group.add(snout);
 
-            const beard = new THREE.Mesh(new THREE.ConeGeometry(0.22, 0.8, 12), accentFur);
-            beard.position.set(0, 2.45, 0.55);
+            // Barba mais realista
+            const beard = new THREE.Mesh(new THREE.ConeGeometry(0.2, 0.75, 12), accentFur);
+            beard.position.set(0, 2.3, 0.5);
             group.add(beard);
 
+            // Orelhas de bode
             for (const side of [-1, 1]) {
-                const ear = new THREE.Mesh(new THREE.ConeGeometry(0.18, 0.45, 10), furMaterial);
-                ear.position.set(0.3 * side, 2.9, 0);
-                ear.rotation.set(Math.PI / 2.2, 0, -side * 0.5);
+                const ear = new THREE.Mesh(new THREE.ConeGeometry(0.16, 0.4, 10), furMaterial);
+                ear.position.set(0.28 * side, 2.65, 0.05);
+                ear.rotation.set(Math.PI / 2.2, 0, -side * 0.4);
                 group.add(ear);
             }
 
+            // Chifres mais realistas e maiores
             for (const side of [-1, 1]) {
-                const horn = new THREE.Mesh(new THREE.TorusGeometry(0.55, 0.09, 20, 40, Math.PI * 1.4), hornMaterial);
-                horn.position.set(0.4 * side, 3.1, -0.15);
+                const horn = new THREE.Mesh(new THREE.TorusGeometry(0.6, 0.1, 20, 40, Math.PI * 1.4), hornMaterial);
+                horn.position.set(0.35 * side, 2.85, -0.1);
                 horn.rotation.set(Math.PI / 2.1, side > 0 ? Math.PI / 1.8 : -Math.PI / 1.8, 0);
                 group.add(horn);
             }
 
+            // Olhos brilhantes
             for (const side of [-1, 1]) {
-                const eye = new THREE.Mesh(new THREE.SphereGeometry(0.1, 16, 16), eyeMaterial);
-                eye.position.set(0.2 * side, 2.85, 0.55);
+                const eye = new THREE.Mesh(new THREE.SphereGeometry(0.12, 16, 16), eyeMaterial);
+                eye.position.set(0.18 * side, 2.6, 0.5);
                 group.add(eye);
             }
 
-            const armMaterial = new THREE.MeshStandardMaterial({ color: 0x181311, roughness: 0.9 });
+            // Braços humanos mais realistas
             for (const side of [-1, 1]) {
-                const upperArm = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.2, 1.1, 14), armMaterial);
-                upperArm.position.set(0.45 * side, 2.2, 0);
-                upperArm.rotation.z = side * Math.PI / 12;
+                // Ombro
+                const shoulder = new THREE.Mesh(new THREE.SphereGeometry(0.18, 12, 12), furMaterial);
+                shoulder.position.set(0.5 * side, 2.0, 0);
+                group.add(shoulder);
+
+                // Braço superior
+                const upperArm = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.18, 0.95, 14), armMaterial);
+                upperArm.position.set(0.55 * side, 1.5, 0);
+                upperArm.rotation.z = side * Math.PI / 10;
                 group.add(upperArm);
 
-                const foreArm = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.15, 1.2, 14), armMaterial);
-                foreArm.position.set(0.6 * side, 1.3, 0.1);
-                foreArm.rotation.z = side * Math.PI / 18;
+                // Cotovelo
+                const elbow = new THREE.Mesh(new THREE.SphereGeometry(0.12, 10, 10), armMaterial);
+                elbow.position.set(0.65 * side, 1.05, 0.05);
+                group.add(elbow);
+
+                // Antebraço
+                const foreArm = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.14, 1.0, 14), armMaterial);
+                foreArm.position.set(0.7 * side, 0.5, 0.1);
+                foreArm.rotation.z = side * Math.PI / 15;
                 group.add(foreArm);
+
+                // Mão/pata de bode
+                const hand = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.2, 0.25, 8), armMaterial);
+                hand.position.set(0.75 * side, 0.0, 0.15);
+                hand.rotation.z = side * Math.PI / 20;
+                group.add(hand);
             }
 
-            const legPositions = [
-                [-0.32, 0.65, 0.25],
-                [0.32, 0.65, 0.25],
-                [-0.28, 0.65, -0.05],
-                [0.28, 0.65, -0.05]
-            ];
-            legPositions.forEach(([x, y, z]) => {
-                const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.18, 1.5, 16), armMaterial);
-                leg.position.set(x, y, z);
-                group.add(leg);
-            });
+            // Pernas bípedes (2 pernas em vez de 4)
+            for (const side of [-1, 1]) {
+                // Quadril
+                const hip = new THREE.Mesh(new THREE.SphereGeometry(0.16, 12, 12), furMaterial);
+                hip.position.set(0.25 * side, 0.7, 0);
+                group.add(hip);
 
-            const hoofMaterial = new THREE.MeshStandardMaterial({ color: 0x120b09, roughness: 0.7 });
-            legPositions.forEach(([x, , z]) => {
-                const hoof = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.18, 0.2, 12), hoofMaterial);
-                hoof.position.set(x, 0.05, z);
-                group.add(hoof);
-            });
+                // Coxa
+                const thigh = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.22, 0.9, 16), armMaterial);
+                thigh.position.set(0.28 * side, 0.2, 0);
+                thigh.rotation.x = 0.1;
+                group.add(thigh);
 
+                // Joelho
+                const knee = new THREE.Mesh(new THREE.SphereGeometry(0.14, 10, 10), armMaterial);
+                knee.position.set(0.3 * side, -0.25, 0);
+                group.add(knee);
+
+                // Canela
+                const shin = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.18, 0.85, 16), armMaterial);
+                shin.position.set(0.32 * side, -0.7, 0);
+                shin.rotation.x = -0.05;
+                group.add(shin);
+
+                // Pé/casco de bode
+                const foot = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.15, 0.35, 8), hoofMaterial);
+                foot.position.set(0.35 * side, -1.15, 0.1);
+                foot.rotation.x = Math.PI / 12;
+                group.add(foot);
+            }
+
+            // Aura sutil
             const aura = new THREE.Mesh(
-                new THREE.SphereGeometry(1.4, 24, 16),
+                new THREE.SphereGeometry(1.3, 24, 16),
                 new THREE.MeshStandardMaterial({
                     color: 0x221b17,
                     transparent: true,
-                    opacity: 0.2,
+                    opacity: 0.15,
                     emissive: 0x30231a,
-                    emissiveIntensity: 0.3
+                    emissiveIntensity: 0.25
                 })
             );
-            aura.position.y = 2.0;
+            aura.position.y = 1.5;
             group.add(aura);
 
             group.traverse((obj) => {
