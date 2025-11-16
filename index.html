@@ -1828,143 +1828,169 @@
         function criarModeloLeao() {
             const group = new THREE.Group();
             const furMaterial = new THREE.MeshStandardMaterial({ 
-                color: 0xd4a574, 
-                roughness: 0.85,
-                metalness: 0.02
-            });
-            const maneMaterial = new THREE.MeshStandardMaterial({ 
-                color: 0x8b6914, 
+                color: 0xe0b87a, 
                 roughness: 0.88,
                 metalness: 0.01
             });
+            const maneMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0x9d7a2a, 
+                roughness: 0.92,
+                metalness: 0.0
+            });
             const eyeMaterial = new THREE.MeshStandardMaterial({
-                color: 0xffff00,
-                emissive: 0xffff00,
-                emissiveIntensity: 0.5,
-                roughness: 0.3
+                color: 0xffd700,
+                emissive: 0xffaa00,
+                emissiveIntensity: 0.7,
+                roughness: 0.2,
+                metalness: 0.1
             });
             const armMaterial = new THREE.MeshStandardMaterial({ 
-                color: 0xc49a64, 
-                roughness: 0.87,
-                metalness: 0.02
+                color: 0xd0a870, 
+                roughness: 0.89,
+                metalness: 0.01
             });
             const pawMaterial = new THREE.MeshStandardMaterial({ 
-                color: 0x8b6914, 
-                roughness: 0.8,
+                color: 0x7a5a2a, 
+                roughness: 0.85,
                 metalness: 0.02
             });
 
-            // Corpo humanoide/bípede de leão
-            const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.6, 1.6, 18), furMaterial);
-            torso.position.y = 1.3;
+            // Corpo humanoide/bípede de leão - mais robusto e majestoso
+            const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.48, 0.65, 1.7, 22), furMaterial);
+            torso.position.y = 1.35;
             group.add(torso);
 
-            // Peito
-            const chest = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.55, 1.0, 18), furMaterial);
-            chest.position.set(0, 1.6, 0.15);
+            // Peito musculoso
+            const chest = new THREE.Mesh(new THREE.CylinderGeometry(0.53, 0.58, 1.05, 22), furMaterial);
+            chest.position.set(0, 1.65, 0.18);
             group.add(chest);
 
             // Cintura/pelve
-            const pelvis = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.45, 0.4, 16), furMaterial);
-            pelvis.position.y = 0.7;
+            const pelvis = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.48, 0.45, 20), furMaterial);
+            pelvis.position.y = 0.75;
             group.add(pelvis);
 
-            // Cabeça de leão
-            const head = new THREE.Mesh(new THREE.SphereGeometry(0.42, 20, 18), furMaterial);
-            head.position.set(0, 2.4, 0.25);
+            // Cabeça de leão mais detalhada
+            const head = new THREE.Mesh(new THREE.SphereGeometry(0.45, 22, 20), furMaterial);
+            head.scale.set(1.05, 1.0, 1.15);
+            head.position.set(0, 2.45, 0.28);
             group.add(head);
 
-            // Juba majestosa ao redor da cabeça
-            const mane = new THREE.Mesh(new THREE.TorusGeometry(0.55, 0.18, 14, 24), maneMaterial);
-            mane.position.set(0, 2.4, 0);
-            mane.rotation.x = Math.PI / 2;
-            group.add(mane);
-
-            // Focinho de leão
-            const snout = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.22, 0.35), furMaterial);
-            snout.position.set(0, 2.3, 0.55);
-            group.add(snout);
-
-            // Olhos brilhantes
-            for (const side of [-1, 1]) {
-                const eye = new THREE.Mesh(new THREE.SphereGeometry(0.1, 14, 14), eyeMaterial);
-                eye.position.set(0.15 * side, 2.45, 0.4);
-                group.add(eye);
+            // Juba majestosa e volumosa ao redor da cabeça
+            for (let i = 0; i < 8; i++) {
+                const maneSegment = new THREE.Mesh(
+                    new THREE.TorusGeometry(0.58 + i * 0.03, 0.2, 12, 20),
+                    maneMaterial
+                );
+                maneSegment.position.set(0, 2.45 - i * 0.05, 0);
+                maneSegment.rotation.x = Math.PI / 2;
+                maneSegment.rotation.y = (i * Math.PI * 2) / 8;
+                group.add(maneSegment);
             }
 
-            // Orelhas de leão
+            // Focinho de leão mais realista
+            const snout = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.25, 0.4), furMaterial);
+            snout.position.set(0, 2.35, 0.6);
+            group.add(snout);
+
+            // Nariz
+            const nose = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.08, 0.1),
+                new THREE.MeshStandardMaterial({ color: 0x4a2a1a, roughness: 0.6 }));
+            nose.position.set(0, 2.32, 0.75);
+            group.add(nose);
+
+            // Olhos brilhantes e expressivos
             for (const side of [-1, 1]) {
-                const ear = new THREE.Mesh(new THREE.ConeGeometry(0.14, 0.3, 8), furMaterial);
-                ear.position.set(0.28 * side, 2.55, 0.15);
-                ear.rotation.z = -side * Math.PI / 5;
+                const eye = new THREE.Mesh(new THREE.SphereGeometry(0.12, 16, 16), eyeMaterial);
+                eye.position.set(0.18 * side, 2.48, 0.45);
+                group.add(eye);
+                
+                // Pupila
+                const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.06, 12, 12),
+                    new THREE.MeshStandardMaterial({ color: 0x000000 }));
+                pupil.position.set(0.19 * side, 2.49, 0.48);
+                group.add(pupil);
+            }
+
+            // Orelhas de leão mais realistas
+            for (const side of [-1, 1]) {
+                const ear = new THREE.Mesh(new THREE.ConeGeometry(0.16, 0.35, 10), furMaterial);
+                ear.position.set(0.32 * side, 2.6, 0.2);
+                ear.rotation.z = -side * Math.PI / 4.5;
+                ear.rotation.x = -0.15;
                 group.add(ear);
             }
 
-            // Cauda de leão
-            const tail = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.9, 12), furMaterial);
-            tail.position.set(0, 0.9, -0.5);
-            tail.rotation.x = -Math.PI / 3;
+            // Cauda de leão com tufo
+            const tail = new THREE.Mesh(new THREE.ConeGeometry(0.14, 1.0, 14), furMaterial);
+            tail.position.set(0, 0.95, -0.55);
+            tail.rotation.x = -Math.PI / 2.7;
             group.add(tail);
+            
+            // Tufo na ponta da cauda
+            const tailTuft = new THREE.Mesh(new THREE.SphereGeometry(0.12, 12, 12), maneMaterial);
+            tailTuft.position.set(0, 0.4, -0.9);
+            group.add(tailTuft);
 
-            // Braços humanos de leão
+            // Braços humanos de leão - mais fortes
             for (const side of [-1, 1]) {
                 // Ombro
-                const shoulder = new THREE.Mesh(new THREE.SphereGeometry(0.18, 12, 12), furMaterial);
-                shoulder.position.set(0.5 * side, 1.9, 0);
+                const shoulder = new THREE.Mesh(new THREE.SphereGeometry(0.2, 14, 14), furMaterial);
+                shoulder.position.set(0.53 * side, 1.95, 0);
                 group.add(shoulder);
 
-                // Braço superior
-                const upperArm = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.18, 0.95, 16), armMaterial);
-                upperArm.position.set(0.55 * side, 1.4, 0);
-                upperArm.rotation.z = side * Math.PI / 12;
+                // Braço superior musculado
+                const upperArm = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.2, 1.0, 20), armMaterial);
+                upperArm.position.set(0.58 * side, 1.45, 0);
+                upperArm.rotation.z = side * Math.PI / 11;
                 group.add(upperArm);
 
                 // Cotovelo
-                const elbow = new THREE.Mesh(new THREE.SphereGeometry(0.12, 10, 10), armMaterial);
-                elbow.position.set(0.6 * side, 0.95, 0.05);
+                const elbow = new THREE.Mesh(new THREE.SphereGeometry(0.14, 12, 12), armMaterial);
+                elbow.position.set(0.63 * side, 0.95, 0.06);
                 group.add(elbow);
 
                 // Antebraço
-                const foreArm = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.14, 1.0, 16), armMaterial);
-                foreArm.position.set(0.65 * side, 0.4, 0.1);
-                foreArm.rotation.z = side * Math.PI / 18;
+                const foreArm = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.16, 1.05, 20), armMaterial);
+                foreArm.position.set(0.68 * side, 0.4, 0.12);
+                foreArm.rotation.z = side * Math.PI / 17;
                 group.add(foreArm);
 
-                // Pata/mão de leão
-                const paw = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.2, 0.28, 8), pawMaterial);
-                paw.position.set(0.7 * side, -0.1, 0.15);
-                paw.rotation.z = side * Math.PI / 25;
+                // Pata/mão de leão com garras
+                const paw = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.24, 0.32, 10), pawMaterial);
+                paw.position.set(0.73 * side, -0.12, 0.18);
+                paw.rotation.z = side * Math.PI / 24;
                 group.add(paw);
             }
 
-            // Pernas bípedes (2 pernas em vez de 4)
+            // Pernas bípedes (2 pernas) - mais fortes e musculadas
             for (const side of [-1, 1]) {
                 // Quadril
-                const hip = new THREE.Mesh(new THREE.SphereGeometry(0.17, 12, 12), furMaterial);
-                hip.position.set(0.28 * side, 0.7, 0);
+                const hip = new THREE.Mesh(new THREE.SphereGeometry(0.19, 14, 14), furMaterial);
+                hip.position.set(0.3 * side, 0.75, 0);
                 group.add(hip);
 
-                // Coxa
-                const thigh = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.22, 0.95, 18), armMaterial);
-                thigh.position.set(0.3 * side, 0.2, 0);
-                thigh.rotation.x = 0.1;
+                // Coxa musculada
+                const thigh = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.24, 1.0, 22), armMaterial);
+                thigh.position.set(0.32 * side, 0.25, 0);
+                thigh.rotation.x = 0.12;
                 group.add(thigh);
 
                 // Joelho
-                const knee = new THREE.Mesh(new THREE.SphereGeometry(0.15, 10, 10), armMaterial);
-                knee.position.set(0.32 * side, -0.3, 0);
+                const knee = new THREE.Mesh(new THREE.SphereGeometry(0.17, 12, 12), armMaterial);
+                knee.position.set(0.35 * side, -0.25, 0);
                 group.add(knee);
 
                 // Canela
-                const shin = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.18, 0.8, 18), armMaterial);
-                shin.position.set(0.35 * side, -0.75, 0);
-                shin.rotation.x = -0.05;
+                const shin = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.2, 0.85, 22), armMaterial);
+                shin.position.set(0.38 * side, -0.68, 0);
+                shin.rotation.x = -0.06;
                 group.add(shin);
 
-                // Pata/casco de leão
-                const foot = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.14, 0.35, 8), pawMaterial);
-                foot.position.set(0.38 * side, -1.15, 0.1);
-                foot.rotation.x = Math.PI / 14;
+                // Pata de leão com garras
+                const foot = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.16, 0.38, 10), pawMaterial);
+                foot.position.set(0.4 * side, -1.12, 0.12);
+                foot.rotation.x = Math.PI / 13;
                 group.add(foot);
             }
 
@@ -2038,149 +2064,179 @@
         function criarModeloCavalo() {
             const group = new THREE.Group();
             const bodyMaterial = new THREE.MeshStandardMaterial({ 
-                color: 0x7b4a25, 
-                roughness: 0.75,
-                metalness: 0.03
-            });
-            const maneMaterial = new THREE.MeshStandardMaterial({ 
-                color: 0x2b1a0f, 
-                roughness: 0.85,
-                metalness: 0.01
-            });
-            const hoofMaterial = new THREE.MeshStandardMaterial({ 
-                color: 0x1b130e, 
-                roughness: 0.6,
-                metalness: 0.05
-            });
-            const armMaterial = new THREE.MeshStandardMaterial({ 
-                color: 0x6b3a15, 
-                roughness: 0.78,
+                color: 0x8b5a3c, 
+                roughness: 0.8,
                 metalness: 0.02
             });
+            const maneMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0x1a0f08, 
+                roughness: 0.9,
+                metalness: 0.0
+            });
+            const hoofMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0x0f0a06, 
+                roughness: 0.5,
+                metalness: 0.1
+            });
+            const armMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0x7a4a2c, 
+                roughness: 0.82,
+                metalness: 0.02
+            });
+            const eyeMaterial = new THREE.MeshStandardMaterial({
+                color: 0x4a2a1a,
+                roughness: 0.3,
+                metalness: 0.2
+            });
 
-            // Corpo humanoide/bípede de cavalo
-            const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.65, 1.8, 20), bodyMaterial);
-            torso.position.y = 1.4;
+            // Corpo humanoide/bípede de cavalo - mais robusto
+            const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.52, 0.68, 1.85, 24), bodyMaterial);
+            torso.position.y = 1.45;
             group.add(torso);
 
-            // Peito
-            const chest = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.6, 1.1, 20), bodyMaterial);
-            chest.position.set(0, 1.7, 0.15);
+            // Peito musculoso
+            const chest = new THREE.Mesh(new THREE.CylinderGeometry(0.58, 0.65, 1.15, 24), bodyMaterial);
+            chest.position.set(0, 1.75, 0.18);
             group.add(chest);
 
             // Cintura/pelve
-            const pelvis = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.5, 0.45, 18), bodyMaterial);
-            pelvis.position.y = 0.8;
+            const pelvis = new THREE.Mesh(new THREE.CylinderGeometry(0.48, 0.52, 0.5, 20), bodyMaterial);
+            pelvis.position.y = 0.85;
             group.add(pelvis);
 
-            // Pescoço de cavalo
-            const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.32, 0.9, 16), bodyMaterial);
-            neck.position.set(0.5, 2.0, 0.25);
-            neck.rotation.z = Math.PI / 6;
+            // Pescoço de cavalo mais longo e elegante
+            const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.35, 1.05, 20), bodyMaterial);
+            neck.position.set(0.55, 2.05, 0.3);
+            neck.rotation.z = Math.PI / 5.5;
             group.add(neck);
 
-            // Cabeça de cavalo
-            const head = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.5, 0.65, 12), bodyMaterial);
-            head.position.set(1.1, 2.4, 0.35);
+            // Cabeça de cavalo mais detalhada
+            const head = new THREE.Mesh(new THREE.SphereGeometry(0.45, 20, 18), bodyMaterial);
+            head.scale.set(1.1, 1.0, 1.2);
+            head.position.set(1.15, 2.5, 0.4);
             group.add(head);
 
-            // Focinho de cavalo
-            const muzzle = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.22, 0.5, 14), bodyMaterial);
-            muzzle.position.set(1.35, 2.25, 0.5);
+            // Focinho de cavalo mais realista
+            const muzzle = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.25, 0.55, 16), bodyMaterial);
+            muzzle.position.set(1.4, 2.3, 0.55);
             muzzle.rotation.x = Math.PI / 2;
             group.add(muzzle);
 
-            // Crina (juba) de cavalo
-            const mane = new THREE.Mesh(new THREE.BoxGeometry(0.25, 1.1, 0.35), maneMaterial);
-            mane.position.set(0.4, 2.3, -0.05);
-            mane.rotation.z = Math.PI / 8;
-            group.add(mane);
-
-            // Orelhas de cavalo
+            // Narinas
             for (const side of [-1, 1]) {
-                const ear = new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.3, 8), bodyMaterial);
-                ear.position.set(0.9 + 0.15 * side, 2.6, 0.3);
-                ear.rotation.z = -side * Math.PI / 6;
+                const nostril = new THREE.Mesh(new THREE.SphereGeometry(0.05, 8, 8), 
+                    new THREE.MeshStandardMaterial({ color: 0x000000 }));
+                nostril.position.set(1.4, 2.3, 0.6 + side * 0.08);
+                group.add(nostril);
+            }
+
+            // Crina (juba) de cavalo mais volumosa e detalhada
+            for (let i = 0; i < 5; i++) {
+                const maneSegment = new THREE.Mesh(
+                    new THREE.BoxGeometry(0.22 + Math.random() * 0.05, 0.3, 0.4),
+                    maneMaterial
+                );
+                maneSegment.position.set(
+                    0.35 + i * 0.15, 
+                    2.2 + Math.sin(i) * 0.1, 
+                    -0.05 + Math.cos(i) * 0.05
+                );
+                maneSegment.rotation.z = Math.PI / 7 + (Math.random() - 0.5) * 0.2;
+                group.add(maneSegment);
+            }
+
+            // Orelhas de cavalo mais realistas
+            for (const side of [-1, 1]) {
+                const ear = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.35, 10), bodyMaterial);
+                ear.position.set(0.95 + 0.18 * side, 2.65, 0.35);
+                ear.rotation.z = -side * Math.PI / 5.5;
+                ear.rotation.x = -0.2;
                 group.add(ear);
             }
 
-            // Olhos de cavalo
+            // Olhos de cavalo mais expressivos
             for (const side of [-1, 1]) {
-                const eye = new THREE.Mesh(new THREE.SphereGeometry(0.08, 12, 12), 
-                    new THREE.MeshStandardMaterial({ 
-                        color: 0x000000, 
-                        roughness: 0.2,
-                        metalness: 0.1
-                    }));
-                eye.position.set(0.95 + 0.12 * side, 2.45, 0.45);
+                const eye = new THREE.Mesh(new THREE.SphereGeometry(0.1, 14, 14), eyeMaterial);
+                eye.position.set(1.0 + 0.15 * side, 2.5, 0.5);
                 group.add(eye);
+                
+                // Brilho no olho
+                const eyeGlow = new THREE.Mesh(new THREE.SphereGeometry(0.04, 8, 8),
+                    new THREE.MeshStandardMaterial({ 
+                        color: 0xffffff, 
+                        emissive: 0xffffff,
+                        emissiveIntensity: 0.5
+                    }));
+                eyeGlow.position.set(1.02 + 0.15 * side, 2.52, 0.52);
+                group.add(eyeGlow);
             }
 
-            // Cauda de cavalo
-            const tail = new THREE.Mesh(new THREE.ConeGeometry(0.15, 1.0, 12), maneMaterial);
-            tail.position.set(0, 0.95, -0.5);
-            tail.rotation.x = -Math.PI / 3;
+            // Cauda de cavalo mais volumosa
+            const tail = new THREE.Mesh(new THREE.ConeGeometry(0.18, 1.15, 14), maneMaterial);
+            tail.position.set(0, 1.0, -0.55);
+            tail.rotation.x = -Math.PI / 2.8;
+            tail.rotation.z = 0.1;
             group.add(tail);
 
-            // Braços humanos de cavalo
+            // Braços humanos de cavalo - mais musculados
             for (const side of [-1, 1]) {
                 // Ombro
-                const shoulder = new THREE.Mesh(new THREE.SphereGeometry(0.2, 12, 12), bodyMaterial);
-                shoulder.position.set(0.55 * side, 1.95, 0);
+                const shoulder = new THREE.Mesh(new THREE.SphereGeometry(0.22, 14, 14), bodyMaterial);
+                shoulder.position.set(0.58 * side, 2.0, 0);
                 group.add(shoulder);
 
-                // Braço superior
-                const upperArm = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.2, 1.0, 18), armMaterial);
-                upperArm.position.set(0.6 * side, 1.4, 0);
-                upperArm.rotation.z = side * Math.PI / 10;
+                // Braço superior musculado
+                const upperArm = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.22, 1.05, 20), armMaterial);
+                upperArm.position.set(0.62 * side, 1.45, 0);
+                upperArm.rotation.z = side * Math.PI / 9;
                 group.add(upperArm);
 
                 // Cotovelo
-                const elbow = new THREE.Mesh(new THREE.SphereGeometry(0.13, 10, 10), armMaterial);
-                elbow.position.set(0.65 * side, 0.9, 0.05);
+                const elbow = new THREE.Mesh(new THREE.SphereGeometry(0.14, 12, 12), armMaterial);
+                elbow.position.set(0.68 * side, 0.95, 0.06);
                 group.add(elbow);
 
                 // Antebraço
-                const foreArm = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.16, 1.1, 18), armMaterial);
-                foreArm.position.set(0.7 * side, 0.3, 0.1);
-                foreArm.rotation.z = side * Math.PI / 20;
+                const foreArm = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.18, 1.15, 20), armMaterial);
+                foreArm.position.set(0.72 * side, 0.3, 0.12);
+                foreArm.rotation.z = side * Math.PI / 18;
                 group.add(foreArm);
 
-                // Mão/pata de cavalo
-                const hand = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.22, 0.3, 8), hoofMaterial);
-                hand.position.set(0.75 * side, -0.25, 0.15);
-                hand.rotation.z = side * Math.PI / 30;
+                // Mão/pata de cavalo mais detalhada
+                const hand = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.25, 0.35, 10), hoofMaterial);
+                hand.position.set(0.78 * side, -0.3, 0.18);
+                hand.rotation.z = side * Math.PI / 28;
                 group.add(hand);
             }
 
-            // Pernas bípedes (2 pernas em vez de 4)
+            // Pernas bípedes (2 pernas) - mais fortes e musculadas
             for (const side of [-1, 1]) {
                 // Quadril
-                const hip = new THREE.Mesh(new THREE.SphereGeometry(0.19, 12, 12), bodyMaterial);
-                hip.position.set(0.3 * side, 0.8, 0);
+                const hip = new THREE.Mesh(new THREE.SphereGeometry(0.21, 14, 14), bodyMaterial);
+                hip.position.set(0.32 * side, 0.85, 0);
                 group.add(hip);
 
-                // Coxa
-                const thigh = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.24, 1.0, 20), armMaterial);
-                thigh.position.set(0.32 * side, 0.25, 0);
-                thigh.rotation.x = 0.1;
+                // Coxa musculada
+                const thigh = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.26, 1.05, 24), armMaterial);
+                thigh.position.set(0.34 * side, 0.3, 0);
+                thigh.rotation.x = 0.12;
                 group.add(thigh);
 
                 // Joelho
-                const knee = new THREE.Mesh(new THREE.SphereGeometry(0.16, 10, 10), armMaterial);
-                knee.position.set(0.35 * side, -0.25, 0);
+                const knee = new THREE.Mesh(new THREE.SphereGeometry(0.18, 12, 12), armMaterial);
+                knee.position.set(0.37 * side, -0.23, 0);
                 group.add(knee);
 
                 // Canela
-                const shin = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.2, 0.85, 20), armMaterial);
-                shin.position.set(0.38 * side, -0.7, 0);
-                shin.rotation.x = -0.05;
+                const shin = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.22, 0.9, 24), armMaterial);
+                shin.position.set(0.4 * side, -0.68, 0);
+                shin.rotation.x = -0.06;
                 group.add(shin);
 
-                // Casco de cavalo
-                const hoof = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.16, 0.4, 8), hoofMaterial);
-                hoof.position.set(0.4 * side, -1.2, 0.12);
-                hoof.rotation.x = Math.PI / 16;
+                // Casco de cavalo mais realista
+                const hoof = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.18, 0.45, 10), hoofMaterial);
+                hoof.position.set(0.42 * side, -1.23, 0.15);
+                hoof.rotation.x = Math.PI / 15;
                 group.add(hoof);
             }
 
