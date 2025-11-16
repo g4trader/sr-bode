@@ -2272,6 +2272,7 @@
             // Porta maior para combinar com a cabana maior
             const doorPivot = new THREE.Group();
             doorPivot.position.set(1.0, 0, 4.1);
+            doorPivot.scale.set(1, 1, 1); // Garantir escala correta
             const door = new THREE.Mesh(
                 new THREE.BoxGeometry(1.8, 2.8, 0.2),
                 new THREE.MeshStandardMaterial({ 
@@ -2281,6 +2282,7 @@
                 })
             );
             door.position.set(-0.9, 1.4, 0);
+            door.scale.set(1, 1, 1); // Garantir escala correta
             door.castShadow = true;
             door.receiveShadow = true;
             doorPivot.add(door);
@@ -3906,12 +3908,14 @@
             await new Promise(resolve => setTimeout(resolve, 1500));
 
             const lobo = criarModeloLobo();
-            lobo.position.set(-1.6, 0, -3.2);
-            lobo.rotation.y = Math.PI / 4;
+            // Posição ajustada: porta está em (1.0, 0, -1.9) na cena, lobo deve aparecer na porta
+            lobo.scale.set(0.9, 0.9, 0.9);
+            lobo.position.set(1.0, 0, -1.9);
+            lobo.rotation.y = Math.PI;
             scene.add(lobo);
 
             const loboLight = new THREE.PointLight(0x7ec6ff, 1.2, 10, 2);
-            loboLight.position.set(-1.6, 1.8, -3.2);
+            loboLight.position.set(1.0, 1.8, -1.9);
             scene.add(loboLight);
 
             const { base, look } = getSceneCameraBase();
@@ -4253,7 +4257,8 @@
 
                 // Verificar vitória primeiro (antes das condições de morte)
                 const distanciaAteCidadeFinal = 220 - gameState.distancia_cidade;
-                if (distanciaAteCidadeFinal <= 0 && gameState.proximidade_sr_bode <= 12) {
+                // Quando a distância até a cidade chega a 0, começa a luta
+                if (distanciaAteCidadeFinal <= 0) {
                     resgatado = true;
                     break;
                 }
