@@ -4009,8 +4009,8 @@
                 }
 
                 // Quando a distância até a cidade chegar a 0, começa a luta
-                const distanciaAteCidade = 220 - gameState.distancia_cidade;
-                if (distanciaAteCidade <= 0 && gameState.proximidade_sr_bode <= 12) {
+                const distanciaAteCidadeFinal = 220 - gameState.distancia_cidade;
+                if (distanciaAteCidadeFinal <= 0 && gameState.proximidade_sr_bode <= 12) {
                     resgatado = true;
                     break;
                 }
@@ -4048,8 +4048,8 @@
             atualizarStats();
         }
 
-        // Iniciar jogo
-        async function startGame() {
+        // Iniciar jogo - expor no window para acesso global
+        window.startGame = async function startGame() {
             if (gameState.isRunning) return;
             resetGameProgress();
             gameState.isRunning = true;
