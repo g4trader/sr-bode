@@ -3896,7 +3896,8 @@
                 verificarCansaco();
             };
 
-            const capturaLimite = 120;
+            // Morte quando proximidade do bode chegar a 0 (ele te alcança)
+            const capturaLimite = 0;
             let capturado = false;
             let resgatado = false;
 
@@ -4004,13 +4005,13 @@
                     break;
                 }
 
-                // Condições de morte: fome chega a 0 OU proximidade do bode muito alta
+                // Condições de morte: fome chega a 0 OU proximidade do bode chega a 0 (ele te alcança)
                 if (gameState.fome <= 0) {
                     capturado = true;
                     break;
                 }
 
-                if (gameState.proximidade_sr_bode >= capturaLimite) {
+                if (gameState.proximidade_sr_bode <= capturaLimite) {
                     capturado = true;
                     break;
                 }
@@ -4021,7 +4022,7 @@
                 let mensagemMorte = 'O Senhor Bode te alcança! A fuga infinita termina em escuridão absoluta...';
                 if (gameState.fome <= 0) {
                     mensagemMorte = 'Sua fome chegou a zero! Você desmaia de exaustão e o Senhor Bode te alcança...';
-                } else if (gameState.proximidade_sr_bode >= capturaLimite) {
+                } else if (gameState.proximidade_sr_bode <= capturaLimite) {
                     mensagemMorte = 'O Senhor Bode te alcançou completamente! Não há mais como escapar...';
                 }
                 mostrarDialogo(mensagemMorte);
