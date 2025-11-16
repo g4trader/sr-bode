@@ -1195,53 +1195,124 @@
                 roughness: 0.3,
                 metalness: 0.1
             });
+            const armMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0x1a1a1a, 
+                roughness: 0.88,
+                metalness: 0.01
+            });
+            const pawMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0x0f0f0f, 
+                roughness: 0.8,
+                metalness: 0.02
+            });
 
-            const torso = new THREE.Mesh(new THREE.BoxGeometry(0.7, 1.2, 0.45), furMaterial);
-            torso.position.y = 1.05;
+            // Corpo humanoide/bípede de lobo
+            const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.55, 1.5, 16), furMaterial);
+            torso.position.y = 1.2;
             group.add(torso);
 
-            const chest = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.7, 0.5), darkFur);
-            chest.position.set(0, 1.25, 0);
+            const chest = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.5, 0.8, 16), darkFur);
+            chest.position.set(0, 1.5, 0.1);
             group.add(chest);
 
-            const head = new THREE.Mesh(new THREE.SphereGeometry(0.35, 16, 16), furMaterial);
-            head.position.set(0, 1.75, 0.1);
+            // Cintura/pelve
+            const pelvis = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.4, 0.35, 16), furMaterial);
+            pelvis.position.y = 0.6;
+            group.add(pelvis);
+
+            // Cabeça de lobo mais realista
+            const head = new THREE.Mesh(new THREE.SphereGeometry(0.38, 18, 16), furMaterial);
+            head.position.set(0, 2.1, 0.15);
             group.add(head);
 
-            const muzzle = new THREE.Mesh(new THREE.ConeGeometry(0.18, 0.4, 12), darkFur);
+            // Focinho de lobo
+            const muzzle = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.2, 0.5, 14), darkFur);
             muzzle.rotation.x = Math.PI / 2;
-            muzzle.position.set(0, 1.65, 0.42);
+            muzzle.position.set(0, 2.0, 0.55);
             group.add(muzzle);
 
+            // Orelhas de lobo pontiagudas
             for (const side of [-1, 1]) {
-                const ear = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.35, 8), darkFur);
-                ear.position.set(0.18 * side, 2.0, -0.05);
-                ear.rotation.set(Math.PI / 2.4, 0, -side * 0.4);
+                const ear = new THREE.Mesh(new THREE.ConeGeometry(0.14, 0.4, 8), darkFur);
+                ear.position.set(0.22 * side, 2.25, 0.05);
+                ear.rotation.set(Math.PI / 2.3, 0, -side * 0.35);
                 group.add(ear);
             }
 
+            // Olhos brilhantes de lobo
             for (const side of [-1, 1]) {
-                const eye = new THREE.Mesh(new THREE.SphereGeometry(0.08, 12, 12), glowMaterial);
-                eye.position.set(0.12 * side, 1.72, 0.33);
+                const eye = new THREE.Mesh(new THREE.SphereGeometry(0.1, 14, 14), glowMaterial);
+                eye.position.set(0.15 * side, 2.05, 0.35);
                 group.add(eye);
             }
 
-            const tail = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.6, 10), furMaterial);
-            tail.position.set(0, 0.95, -0.5);
+            // Cauda de lobo
+            const tail = new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.7, 10), furMaterial);
+            tail.position.set(0, 0.8, -0.45);
             tail.rotation.x = -Math.PI / 3;
             group.add(tail);
 
-            const legPositions = [
-                [-0.2, 0, 0.18],
-                [0.2, 0, 0.18],
-                [-0.2, 0, -0.18],
-                [0.2, 0, -0.18]
-            ];
-            legPositions.forEach(([x, y, z]) => {
-                const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.11, 1.1, 10), furMaterial);
-                leg.position.set(x, 0.55, z);
-                group.add(leg);
-            });
+            // Braços humanos de lobo
+            for (const side of [-1, 1]) {
+                // Ombro
+                const shoulder = new THREE.Mesh(new THREE.SphereGeometry(0.15, 12, 12), furMaterial);
+                shoulder.position.set(0.42 * side, 1.8, 0);
+                group.add(shoulder);
+
+                // Braço superior
+                const upperArm = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.16, 0.85, 14), armMaterial);
+                upperArm.position.set(0.48 * side, 1.35, 0);
+                upperArm.rotation.z = side * Math.PI / 10;
+                group.add(upperArm);
+
+                // Cotovelo
+                const elbow = new THREE.Mesh(new THREE.SphereGeometry(0.1, 10, 10), armMaterial);
+                elbow.position.set(0.55 * side, 0.95, 0.05);
+                group.add(elbow);
+
+                // Antebraço
+                const foreArm = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.12, 0.9, 14), armMaterial);
+                foreArm.position.set(0.6 * side, 0.45, 0.1);
+                foreArm.rotation.z = side * Math.PI / 15;
+                group.add(foreArm);
+
+                // Pata/mão de lobo
+                const paw = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.18, 0.22, 8), pawMaterial);
+                paw.position.set(0.65 * side, 0.0, 0.12);
+                paw.rotation.z = side * Math.PI / 20;
+                group.add(paw);
+            }
+
+            // Pernas bípedes (2 pernas em vez de 4)
+            for (const side of [-1, 1]) {
+                // Quadril
+                const hip = new THREE.Mesh(new THREE.SphereGeometry(0.14, 12, 12), furMaterial);
+                hip.position.set(0.22 * side, 0.6, 0);
+                group.add(hip);
+
+                // Coxa
+                const thigh = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.19, 0.8, 16), armMaterial);
+                thigh.position.set(0.25 * side, 0.2, 0);
+                thigh.rotation.x = 0.1;
+                group.add(thigh);
+
+                // Joelho
+                const knee = new THREE.Mesh(new THREE.SphereGeometry(0.12, 10, 10), armMaterial);
+                knee.position.set(0.28 * side, -0.2, 0);
+                group.add(knee);
+
+                // Canela
+                const shin = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.16, 0.75, 16), armMaterial);
+                shin.position.set(0.3 * side, -0.6, 0);
+                shin.rotation.x = -0.05;
+                group.add(shin);
+
+                // Pata/casco de lobo
+                const foot = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.12, 0.3, 8), pawMaterial);
+                foot.position.set(0.32 * side, -1.0, 0.08);
+                foot.rotation.x = Math.PI / 12;
+                group.add(foot);
+            }
 
             group.traverse((obj) => {
                 if (obj.isMesh) {
@@ -2915,8 +2986,9 @@
             scene.userData.bodeGlow = bodeGlow;
 
             positionPlayer(0, 0, 0, 0);
-            const cameraBase = new THREE.Vector3(0, 1.75, 1.6);
-            const cameraLook = new THREE.Vector3(0, 1.4, -7.5);
+            // Vista de cima (top-down) mostrando personagem indo na direção contrária do Senhor Bode
+            const cameraBase = new THREE.Vector3(0, 25, 0);
+            const cameraLook = new THREE.Vector3(0, 0, 0);
             setCameraPose(cameraBase, cameraLook);
             scene.userData.cameraBase = cameraBase.clone();
             scene.userData.cameraLook = cameraLook.clone();
@@ -2983,19 +3055,24 @@
                     }
                 }
 
+                // Vista de cima: câmera sempre olhando para baixo, seguindo o personagem
                 const panicStrength = THREE.MathUtils.clamp(gameState.proximidade_sr_bode / 100, 0, 1);
-                const cameraShake = (Math.random() - 0.5) * 0.06 * panicStrength;
-                const base = scene.userData.cameraBase || cameraBase;
-                const dynamicPosition = base.clone();
-                dynamicPosition.x += cameraShake + Math.sin(tempo * 0.8) * 0.05;
-                dynamicPosition.y += Math.sin(tempo * 6) * 0.11;
-                dynamicPosition.z = base.z - Math.min(12, gameState.distancia_cidade * 0.05);
+                const cameraShake = (Math.random() - 0.5) * 0.08 * panicStrength;
+                
+                // Câmera de cima seguindo o personagem (que está em z=0, movendo-se para frente)
+                const playerZ = -Math.min(12, gameState.distancia_cidade * 0.05);
+                const dynamicPosition = new THREE.Vector3(
+                    cameraShake,
+                    25, // Altura fixa de cima
+                    playerZ + 2 // Segue o personagem
+                );
 
-                const targetBase = scene.userData.cameraTarget || cameraLook;
-                const dynamicTarget = targetBase.clone();
-                dynamicTarget.x += cameraShake * 0.6;
-                dynamicTarget.y += Math.sin(tempo * 3) * 0.05;
-                dynamicTarget.z = dynamicPosition.z - 6.5;
+                // Olhar para o personagem (que está indo na direção contrária do bode)
+                const dynamicTarget = new THREE.Vector3(
+                    cameraShake * 0.5,
+                    0,
+                    playerZ
+                );
                 setCameraPose(dynamicPosition, dynamicTarget);
 
                 scene.userData.cameraBase = dynamicPosition.clone();
