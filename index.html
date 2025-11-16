@@ -3900,8 +3900,11 @@
             let capturado = false;
             let resgatado = false;
 
+            // Criar cena uma vez antes do loop para evitar tela preta
+            criarCenaFuga();
+            
             while (true) {
-                criarCenaFuga();
+                // Não recriar a cena a cada loop para evitar tela preta
                 const distanciaAteCidade = Math.max(0, Math.round(220 - gameState.distancia_cidade));
                 mostrarDialogo(`Distância até a cidade: ${distanciaAteCidade}  |  Distância do Sr Bode: ${Math.round(gameState.proximidade_sr_bode)}\nEscolha sua ação:`);
                 mostrarEscolhas([
@@ -3922,6 +3925,8 @@
                     const ganho = Math.max(8, Math.round(14 * hungerFactor));
                     gameState.distancia_cidade += ganho;
                     gameState.proximidade_sr_bode = Math.max(0, gameState.proximidade_sr_bode - (9 * hungerFactor));
+                    // Senhor Bode sempre ganha 5 de proximidade quando você corre
+                    gameState.proximidade_sr_bode += 5;
                     mostrarDialogo('Você dispara floresta adentro, mantendo o Senhor Bode longe!');
                     audioManager.playEffect('passo');
                     consumirFome(14);
@@ -3929,6 +3934,8 @@
                     const ganho = Math.max(5, Math.round(9 * hungerFactor));
                     gameState.distancia_cidade += ganho;
                     gameState.proximidade_sr_bode = Math.max(0, gameState.proximidade_sr_bode - (5 * hungerFactor));
+                    // Senhor Bode sempre ganha 5 de proximidade quando você corre
+                    gameState.proximidade_sr_bode += 5;
                     mostrarDialogo('Você mantém um ritmo constante, sempre na direção oposta ao Senhor Bode.');
                     consumirFome(9);
                 } else if (escolha === 2) {
@@ -3960,7 +3967,7 @@
                             } else if (item === 'Sabão Macaco') {
                                 mostrarDialogo('Você lança o Sabão Macaco! O Senhor Bode escorrega longe na lama sinistra, sumindo na névoa por alguns instantes!');
                                 audioManager.playEffect('usar');
-                                gameState.proximidade_sr_bode = Math.max(0, gameState.proximidade_sr_bode - 55);
+                                gameState.proximidade_sr_bode = Math.max(0, gameState.proximidade_sr_bode - 50);
                                 gameState.distancia_cidade += 28;
                             }
 
@@ -3990,6 +3997,12 @@
                 atualizarStats();
                 await new Promise(resolve => setTimeout(resolve, 500));
 
+                // Condições de morte: fome chega a 0 OU distância para sr bode chega a 0
+                if (gameState.fome <= 0 || gameState.proximidade_sr_bode <= 0) {
+                    capturado = true;
+                    break;
+                }
+
                 if (gameState.proximidade_sr_bode >= capturaLimite) {
                     capturado = true;
                     break;
@@ -4005,7 +4018,13 @@
 
             criarCenaFuga();
             if (capturado) {
-                mostrarDialogo('O Senhor Bode te alcança! A fuga infinita termina em escuridão absoluta...');
+                let mensagemMorte = 'O Senhor Bode te alcança! A fuga infinita termina em escuridão absoluta...';
+                if (gameState.fome <= 0) {
+                    mensagemMorte = 'Sua fome chegou a zero! Você desmaia de exaustão e o Senhor Bode te alcança...';
+                } else if (gameState.proximidade_sr_bode <= 0) {
+                    mensagemMorte = 'O Senhor Bode te alcançou completamente! Não há mais como escapar...';
+                }
+                mostrarDialogo(mensagemMorte);
                 audioManager.playEffect('perigo');
                 setAmbient(null);
                 setPlayerState('alerta');
