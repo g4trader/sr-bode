@@ -1665,25 +1665,79 @@
 
         function animateModelMove(model, from, to, duration = 2.5) {
             return new Promise((resolve) => {
+                if (!model || !from || !to) {
+                    console.warn('animateModelMove: parâmetros inválidos', { model, from, to });
+                    resolve();
+                    return;
+                }
+                
                 const start = performance.now();
                 const origin = from.clone();
                 const target = to.clone();
+                let animationFrameId = null;
+                let timeoutId = null;
+                
                 const updateRotation = () => {
-                    model.lookAt(target.x, model.position.y, target.z);
+                    try {
+                        if (model && model.position) {
+                            const direction = new THREE.Vector3();
+                            direction.subVectors(target, model.position);
+                            if (direction.length() > 0.01) {
+                                model.lookAt(target.x, model.position.y, target.z);
+                            }
+                        }
+                    } catch (e) {
+                        console.warn('Erro ao atualizar rotação:', e);
+                    }
                 };
+                
                 updateRotation();
+                
                 function step(now) {
-                    const elapsed = (now - start) / (duration * 1000);
-                    const t = Math.min(Math.max(elapsed, 0), 1);
-                    model.position.lerpVectors(origin, target, t);
-                    updateRotation();
-                    if (t < 1) {
-                        requestAnimationFrame(step);
-                    } else {
+                    try {
+                        if (!model || !model.position) {
+                            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+                            if (timeoutId) clearTimeout(timeoutId);
+                            resolve();
+                            return;
+                        }
+                        
+                        const elapsed = (now - start) / (duration * 1000);
+                        const t = Math.min(Math.max(elapsed, 0), 1);
+                        model.position.lerpVectors(origin, target, t);
+                        updateRotation();
+                        
+                        if (t < 1) {
+                            animationFrameId = requestAnimationFrame(step);
+                        } else {
+                            model.position.copy(target);
+                            if (timeoutId) clearTimeout(timeoutId);
+                            resolve();
+                        }
+                    } catch (error) {
+                        console.error('Erro na animação:', error);
+                        if (animationFrameId) cancelAnimationFrame(animationFrameId);
+                        if (timeoutId) clearTimeout(timeoutId);
+                        if (model && model.position) {
+                            model.position.copy(target);
+                        }
                         resolve();
                     }
                 }
-                requestAnimationFrame(step);
+                
+                animationFrameId = requestAnimationFrame(step);
+                
+                // Timeout de segurança para evitar travamentos
+                timeoutId = setTimeout(() => {
+                    if (animationFrameId) {
+                        cancelAnimationFrame(animationFrameId);
+                        animationFrameId = null;
+                    }
+                    if (model && model.position) {
+                        model.position.copy(target);
+                    }
+                    resolve();
+                }, (duration + 2) * 1000);
             });
         }
 
