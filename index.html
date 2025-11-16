@@ -1903,16 +1903,55 @@
             head.position.set(0, 2.45, 0.28);
             group.add(head);
 
-            // Juba majestosa e volumosa ao redor da cabeça
+            // Juba majestosa e volumosa - mais realista e natural
+            // Camadas múltiplas de pelos para criar volume
+            const maneLayers = 12;
+            for (let layer = 0; layer < maneLayers; layer++) {
+                const radius = 0.52 + layer * 0.04;
+                const thickness = 0.15 + Math.random() * 0.08;
+                const height = 0.08;
+                
+                // Criar múltiplos segmentos por camada para mais volume
+                const segmentsPerLayer = 16;
+                for (let seg = 0; seg < segmentsPerLayer; seg++) {
+                    const angle = (seg * Math.PI * 2) / segmentsPerLayer;
+                    const offset = (Math.random() - 0.5) * 0.15;
+                    
+                    const maneSegment = new THREE.Mesh(
+                        new THREE.CylinderGeometry(thickness * 0.5, thickness * 0.6, height, 8),
+                        maneMaterial
+                    );
+                    maneSegment.position.set(
+                        Math.cos(angle) * (radius + offset),
+                        2.5 - layer * 0.06,
+                        Math.sin(angle) * (radius + offset)
+                    );
+                    maneSegment.rotation.set(
+                        Math.PI / 2 + (Math.random() - 0.5) * 0.3,
+                        angle + (Math.random() - 0.5) * 0.4,
+                        (Math.random() - 0.5) * 0.3
+                    );
+                    group.add(maneSegment);
+                }
+            }
+            
+            // Juba frontal mais volumosa
             for (let i = 0; i < 8; i++) {
-                const maneSegment = new THREE.Mesh(
-                    new THREE.TorusGeometry(0.58 + i * 0.03, 0.2, 12, 20),
+                const frontMane = new THREE.Mesh(
+                    new THREE.CylinderGeometry(0.12 + Math.random() * 0.05, 0.15 + Math.random() * 0.05, 0.4, 8),
                     maneMaterial
                 );
-                maneSegment.position.set(0, 2.45 - i * 0.05, 0);
-                maneSegment.rotation.x = Math.PI / 2;
-                maneSegment.rotation.y = (i * Math.PI * 2) / 8;
-                group.add(maneSegment);
+                frontMane.position.set(
+                    (Math.random() - 0.5) * 0.5,
+                    2.6 + i * 0.08,
+                    0.15 + Math.random() * 0.1
+                );
+                frontMane.rotation.set(
+                    (Math.random() - 0.5) * 0.4,
+                    (Math.random() - 0.5) * 0.6,
+                    (Math.random() - 0.5) * 0.3
+                );
+                group.add(frontMane);
             }
 
             // Focinho de leão mais realista
@@ -2160,65 +2199,131 @@
             pelvis.position.y = 0.85;
             group.add(pelvis);
 
-            // Pescoço de cavalo mais longo e elegante
-            const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.35, 1.05, 20), bodyMaterial);
-            neck.position.set(0.55, 2.05, 0.3);
-            neck.rotation.z = Math.PI / 5.5;
+            // Pescoço de cavalo mais longo, elegante e arqueado (característica equina)
+            const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.4, 1.25, 24), bodyMaterial);
+            neck.position.set(0.65, 2.1, 0.35);
+            neck.rotation.z = Math.PI / 5.2;
+            neck.rotation.y = -0.15;
             group.add(neck);
+            
+            // Base do pescoço (garupa)
+            const neckBase = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.52, 0.3, 20), bodyMaterial);
+            neckBase.position.set(0.3, 1.75, 0.25);
+            group.add(neckBase);
 
-            // Cabeça de cavalo mais detalhada
-            const head = new THREE.Mesh(new THREE.SphereGeometry(0.45, 20, 18), bodyMaterial);
-            head.scale.set(1.1, 1.0, 1.2);
-            head.position.set(1.15, 2.5, 0.4);
+            // Cabeça de cavalo mais realista - alongada e característica equina
+            const head = new THREE.Mesh(new THREE.SphereGeometry(0.48, 22, 20), bodyMaterial);
+            head.scale.set(1.15, 0.95, 1.35);
+            head.position.set(1.35, 2.55, 0.45);
+            head.rotation.y = -0.1;
             group.add(head);
+            
+            // Testa de cavalo (área entre os olhos)
+            const forehead = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.25, 0.2), bodyMaterial);
+            forehead.position.set(1.2, 2.65, 0.4);
+            group.add(forehead);
 
-            // Focinho de cavalo mais realista e alongado
-            const muzzle = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.28, 0.65, 18), bodyMaterial);
-            muzzle.position.set(1.5, 2.28, 0.58);
+            // Focinho de cavalo mais realista - longo e característico
+            const muzzle = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.32, 0.75, 20), bodyMaterial);
+            muzzle.position.set(1.7, 2.25, 0.62);
             muzzle.rotation.x = Math.PI / 2;
+            muzzle.rotation.y = -0.05;
             group.add(muzzle);
 
-            // Parte superior do focinho
-            const muzzleTop = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.18, 0.4), bodyMaterial);
-            muzzleTop.position.set(1.5, 2.38, 0.55);
+            // Parte superior do focinho (canhão)
+            const muzzleTop = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.2, 0.45), bodyMaterial);
+            muzzleTop.position.set(1.7, 2.4, 0.58);
             group.add(muzzleTop);
+            
+            // Área do focinho mais estreita (característica equina)
+            const muzzleNarrow = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.15, 0.35), bodyMaterial);
+            muzzleNarrow.position.set(1.75, 2.2, 0.65);
+            group.add(muzzleNarrow);
 
-            // Narinas mais realistas
+            // Narinas grandes e expressivas (característica equina)
             for (const side of [-1, 1]) {
-                const nostril = new THREE.Mesh(new THREE.SphereGeometry(0.06, 10, 10), 
-                    new THREE.MeshStandardMaterial({ color: 0x1a0a0a, roughness: 0.3 }));
-                nostril.position.set(1.5, 2.28, 0.62 + side * 0.09);
+                const nostril = new THREE.Mesh(new THREE.SphereGeometry(0.08, 12, 12), 
+                    new THREE.MeshStandardMaterial({ color: 0x1a0a0a, roughness: 0.25 }));
+                nostril.position.set(1.7, 2.25, 0.65 + side * 0.11);
+                nostril.scale.set(1.0, 1.2, 1.0);
                 group.add(nostril);
             }
             
-            // Lábio superior
-            const upperLip = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.08, 0.12),
+            // Lábio superior mais pronunciado
+            const upperLip = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.1, 0.15),
                 new THREE.MeshStandardMaterial({ color: 0x6a4a2a, roughness: 0.7 }));
-            upperLip.position.set(1.5, 2.22, 0.68);
+            upperLip.position.set(1.75, 2.18, 0.72);
             group.add(upperLip);
+            
+            // Lábio inferior
+            const lowerLip = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.08, 0.12),
+                new THREE.MeshStandardMaterial({ color: 0x5a3a2a, roughness: 0.7 }));
+            lowerLip.position.set(1.75, 2.12, 0.7);
+            group.add(lowerLip);
 
-            // Crina (juba) de cavalo mais volumosa e detalhada
-            for (let i = 0; i < 5; i++) {
-                const maneSegment = new THREE.Mesh(
-                    new THREE.BoxGeometry(0.22 + Math.random() * 0.05, 0.3, 0.4),
+            // Crina de cavalo mais realista - cai ao longo do pescoço
+            const maneSegments = 12;
+            for (let i = 0; i < maneSegments; i++) {
+                const t = i / maneSegments;
+                const neckPos = 0.3 + t * 0.95;
+                const height = 2.0 + t * 0.6;
+                
+                // Múltiplos fios de crina por segmento
+                for (let strand = 0; strand < 3; strand++) {
+                    const maneStrand = new THREE.Mesh(
+                        new THREE.CylinderGeometry(0.04 + Math.random() * 0.02, 0.05 + Math.random() * 0.02, 0.35 + Math.random() * 0.15, 8),
+                        maneMaterial
+                    );
+                    maneStrand.position.set(
+                        neckPos * 0.4 + (Math.random() - 0.5) * 0.1,
+                        height + (Math.random() - 0.5) * 0.08,
+                        -0.1 + (Math.random() - 0.5) * 0.05
+                    );
+                    maneStrand.rotation.set(
+                        Math.PI / 2 + (Math.random() - 0.5) * 0.2,
+                        (Math.random() - 0.5) * 0.3,
+                        (Math.random() - 0.5) * 0.2
+                    );
+                    group.add(maneStrand);
+                }
+            }
+            
+            // Franja na testa
+            for (let i = 0; i < 6; i++) {
+                const forelock = new THREE.Mesh(
+                    new THREE.CylinderGeometry(0.03 + Math.random() * 0.02, 0.04 + Math.random() * 0.02, 0.25 + Math.random() * 0.1, 8),
                     maneMaterial
                 );
-                maneSegment.position.set(
-                    0.35 + i * 0.15, 
-                    2.2 + Math.sin(i) * 0.1, 
-                    -0.05 + Math.cos(i) * 0.05
+                forelock.position.set(
+                    1.15 + (Math.random() - 0.5) * 0.2,
+                    2.75 + Math.random() * 0.1,
+                    0.35 + Math.random() * 0.1
                 );
-                maneSegment.rotation.z = Math.PI / 7 + (Math.random() - 0.5) * 0.2;
-                group.add(maneSegment);
+                forelock.rotation.set(
+                    Math.PI / 2 + (Math.random() - 0.5) * 0.3,
+                    (Math.random() - 0.5) * 0.4,
+                    (Math.random() - 0.5) * 0.2
+                );
+                group.add(forelock);
             }
 
-            // Orelhas de cavalo mais realistas
+            // Orelhas de cavalo mais realistas - pontiagudas e móveis
             for (const side of [-1, 1]) {
-                const ear = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.35, 10), bodyMaterial);
-                ear.position.set(0.95 + 0.18 * side, 2.65, 0.35);
-                ear.rotation.z = -side * Math.PI / 5.5;
-                ear.rotation.x = -0.2;
+                // Orelha externa
+                const ear = new THREE.Mesh(new THREE.ConeGeometry(0.14, 0.4, 12), bodyMaterial);
+                ear.position.set(1.1 + 0.2 * side, 2.7, 0.38);
+                ear.rotation.z = -side * Math.PI / 5;
+                ear.rotation.x = -0.25;
+                ear.rotation.y = side * 0.1;
                 group.add(ear);
+                
+                // Parte interna da orelha (mais clara)
+                const earInner = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.3, 10),
+                    new THREE.MeshStandardMaterial({ color: 0x6a4a2a, roughness: 0.7 }));
+                earInner.position.set(1.12 + 0.2 * side, 2.68, 0.4);
+                earInner.rotation.z = -side * Math.PI / 5;
+                earInner.rotation.x = -0.25;
+                group.add(earInner);
             }
 
             // Olhos de cavalo mais expressivos
