@@ -5285,19 +5285,19 @@
                 if (escolha === 0) {
                     const ganho = Math.max(8, Math.round(14 * hungerFactor));
                     gameState.distancia_cidade += ganho;
-                    // Quando você corre rápido, o Senhor Bode se aproxima mais devagar
-                    // Ele se aproxima: apenas 60% do que você avança (mais lento)
-                    gameState.proximidade_sr_bode = Math.max(0, gameState.proximidade_sr_bode - Math.round(ganho * 0.6));
-                    mostrarDialogo('Você dispara floresta adentro, ganhando distância do Senhor Bode!');
+                    // Quando você corre rápido, o Senhor Bode é mais rápido, mas não muito
+                    // Ele se aproxima: 85% do que você avança + 2 (sempre um pouco mais rápido)
+                    gameState.proximidade_sr_bode = Math.max(0, gameState.proximidade_sr_bode - Math.round(ganho * 0.85 + 2));
+                    mostrarDialogo('Você dispara floresta adentro, mas o Senhor Bode ainda te persegue de perto!');
                     audioManager.playEffect('passo');
                     consumirFome(14);
                 } else if (escolha === 1) {
                     const ganho = Math.max(5, Math.round(9 * hungerFactor));
                     gameState.distancia_cidade += ganho;
-                    // Quando você corre devagar, o Senhor Bode se aproxima devagar também
-                    // Ele se aproxima: apenas 50% do que você avança (mais lento)
-                    gameState.proximidade_sr_bode = Math.max(0, gameState.proximidade_sr_bode - Math.round(ganho * 0.5));
-                    mostrarDialogo('Você mantém um ritmo constante, mantendo o Senhor Bode à distância...');
+                    // Quando você corre devagar, o Senhor Bode se aproxima mais rápido
+                    // Ele se aproxima: 75% do que você avança + 3 (mais rápido que você)
+                    gameState.proximidade_sr_bode = Math.max(0, gameState.proximidade_sr_bode - Math.round(ganho * 0.75 + 3));
+                    mostrarDialogo('Você mantém um ritmo constante, mas o Senhor Bode se aproxima gradualmente...');
                     consumirFome(9);
                 } else if (escolha === 2) {
                     if (gameState.inventario.length > 0) {
@@ -5345,16 +5345,16 @@
                     consumirFome(6);
                 } else if (escolha === 3) {
                     gameState.distancia_cidade = Math.max(0, gameState.distancia_cidade - 6);
-                    // Quando você para, o Bode se aproxima, mas mais devagar
-                    gameState.proximidade_sr_bode = Math.max(0, gameState.proximidade_sr_bode - 8);
-                    mostrarDialogo('Você hesita e o Senhor Bode se aproxima...');
+                    // Quando você para, o Bode se aproxima mais rápido
+                    gameState.proximidade_sr_bode = Math.max(0, gameState.proximidade_sr_bode - 12);
+                    mostrarDialogo('Você hesita e o Senhor Bode se aproxima rapidamente!');
                     audioManager.playEffect('perigo');
                     consumirFome(5);
                 }
 
-                // Pressão constante do Bode: ele sempre se aproxima, mas mais devagar
-                // Mesmo sem ação do jogador, ele se aproxima continuamente, mas lentamente
-                const pressaoBode = 2 + Math.min(4, gameState.distancia_cidade / 50);
+                // Pressão constante do Bode: ele sempre se aproxima moderadamente
+                // Mesmo sem ação do jogador, ele se aproxima continuamente
+                const pressaoBode = 3 + Math.min(6, gameState.distancia_cidade / 40);
                 gameState.proximidade_sr_bode = Math.max(0, gameState.proximidade_sr_bode - pressaoBode);
 
                 atualizarInventario();
