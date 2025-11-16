@@ -3997,21 +3997,21 @@
                 atualizarStats();
                 await new Promise(resolve => setTimeout(resolve, 500));
 
-                // Condições de morte: fome chega a 0 OU distância para sr bode chega a 0
-                if (gameState.fome <= 0 || gameState.proximidade_sr_bode <= 0) {
+                // Verificar vitória primeiro (antes das condições de morte)
+                const distanciaAteCidadeFinal = 220 - gameState.distancia_cidade;
+                if (distanciaAteCidadeFinal <= 0 && gameState.proximidade_sr_bode <= 12) {
+                    resgatado = true;
+                    break;
+                }
+
+                // Condições de morte: fome chega a 0 OU proximidade do bode muito alta
+                if (gameState.fome <= 0) {
                     capturado = true;
                     break;
                 }
 
                 if (gameState.proximidade_sr_bode >= capturaLimite) {
                     capturado = true;
-                    break;
-                }
-
-                // Quando a distância até a cidade chegar a 0, começa a luta
-                const distanciaAteCidadeFinal = 220 - gameState.distancia_cidade;
-                if (distanciaAteCidadeFinal <= 0 && gameState.proximidade_sr_bode <= 12) {
-                    resgatado = true;
                     break;
                 }
             }
@@ -4021,7 +4021,7 @@
                 let mensagemMorte = 'O Senhor Bode te alcança! A fuga infinita termina em escuridão absoluta...';
                 if (gameState.fome <= 0) {
                     mensagemMorte = 'Sua fome chegou a zero! Você desmaia de exaustão e o Senhor Bode te alcança...';
-                } else if (gameState.proximidade_sr_bode <= 0) {
+                } else if (gameState.proximidade_sr_bode >= capturaLimite) {
                     mensagemMorte = 'O Senhor Bode te alcançou completamente! Não há mais como escapar...';
                 }
                 mostrarDialogo(mensagemMorte);
