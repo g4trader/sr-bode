@@ -5180,17 +5180,19 @@
                 if (escolha === 0) {
                     const ganho = Math.max(8, Math.round(14 * hungerFactor));
                     gameState.distancia_cidade += ganho;
-                    // Quando você corre rápido, o Senhor Bode fica mais rápido e sempre se aproxima mais
-                    gameState.proximidade_sr_bode += 12; // Bode se aproxima mais quando você corre rápido
-                    mostrarDialogo('Você dispara floresta adentro, mas o Senhor Bode acelera também!');
+                    // Quando você corre rápido, o Senhor Bode é MAIS RÁPIDO e se aproxima mais do que você avança
+                    // Ele se aproxima mais rápido: ganho + 8 (sempre mais que o jogador avança)
+                    gameState.proximidade_sr_bode = Math.max(0, gameState.proximidade_sr_bode - (ganho + 8));
+                    mostrarDialogo('Você dispara floresta adentro, mas o Senhor Bode é mais rápido e te alcança!');
                     audioManager.playEffect('passo');
                     consumirFome(14);
                 } else if (escolha === 1) {
                     const ganho = Math.max(5, Math.round(9 * hungerFactor));
                     gameState.distancia_cidade += ganho;
-                    // Quando você corre devagar, o Senhor Bode ainda se aproxima
-                    gameState.proximidade_sr_bode += 8; // Bode se aproxima quando você corre devagar
-                    mostrarDialogo('Você mantém um ritmo constante, mas o Senhor Bode continua se aproximando...');
+                    // Quando você corre devagar, o Senhor Bode ainda se aproxima mais rápido
+                    // Ele se aproxima mais rápido: ganho + 5 (sempre mais que o jogador avança)
+                    gameState.proximidade_sr_bode = Math.max(0, gameState.proximidade_sr_bode - (ganho + 5));
+                    mostrarDialogo('Você mantém um ritmo constante, mas o Senhor Bode continua se aproximando mais rápido...');
                     consumirFome(9);
                 } else if (escolha === 2) {
                     if (gameState.inventario.length > 0) {
@@ -5221,7 +5223,8 @@
                             } else if (item === 'Sabão Macaco') {
                                 mostrarDialogo('Você lança o Sabão Macaco! O Senhor Bode escorrega longe na lama sinistra, sumindo na névoa por alguns instantes!');
                                 audioManager.playEffect('usar');
-                                gameState.proximidade_sr_bode = Math.max(0, gameState.proximidade_sr_bode - 50);
+                                // Sabão Macaco afasta o Bode, mas ele ainda se aproxima depois
+                                gameState.proximidade_sr_bode = Math.max(0, gameState.proximidade_sr_bode + 50);
                                 gameState.distancia_cidade += 28;
                             }
 
@@ -5237,15 +5240,17 @@
                     consumirFome(6);
                 } else if (escolha === 3) {
                     gameState.distancia_cidade = Math.max(0, gameState.distancia_cidade - 6);
-                    gameState.proximidade_sr_bode += 18;
+                    // Quando você para, o Bode se aproxima muito mais rápido
+                    gameState.proximidade_sr_bode = Math.max(0, gameState.proximidade_sr_bode - 24);
                     mostrarDialogo('Você hesita e a presença do Senhor Bode quase te alcança!');
                     audioManager.playEffect('perigo');
                     consumirFome(5);
                 }
 
-                const pressaoBode = 4 + Math.min(12, gameState.distancia_cidade / 40);
-                gameState.proximidade_sr_bode += pressaoBode;
-                gameState.proximidade_sr_bode = Math.max(0, gameState.proximidade_sr_bode);
+                // Pressão constante do Bode: ele sempre se aproxima mais rápido
+                // Mesmo sem ação do jogador, ele se aproxima continuamente
+                const pressaoBode = 6 + Math.min(10, gameState.distancia_cidade / 35);
+                gameState.proximidade_sr_bode = Math.max(0, gameState.proximidade_sr_bode - pressaoBode);
 
                 atualizarInventario();
                 atualizarStats();
