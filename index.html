@@ -2137,13 +2137,20 @@
             roof.receiveShadow = true;
             cabanaGroup.add(roof);
 
+            // Porta maior para combinar com a cabana maior
             const doorPivot = new THREE.Group();
-            doorPivot.position.set(0.75, 0, 3.1);
+            doorPivot.position.set(1.0, 0, 4.1);
             const door = new THREE.Mesh(
-                new THREE.BoxGeometry(1.5, 2.4, 0.2),
-                new THREE.MeshStandardMaterial({ color: 0x2d1a0f, roughness: 0.8 })
+                new THREE.BoxGeometry(1.8, 2.8, 0.2),
+                new THREE.MeshStandardMaterial({ 
+                    color: 0x2d1a0f, 
+                    roughness: 0.88,
+                    metalness: 0.02
+                })
             );
-            door.position.set(-0.75, 1.2, 0);
+            door.position.set(-0.9, 1.4, 0);
+            door.castShadow = true;
+            door.receiveShadow = true;
             doorPivot.add(door);
             cabanaGroup.add(doorPivot);
             scene.userData.doorPivot = doorPivot;
@@ -2157,16 +2164,26 @@
                 opacity: 0.7
             });
 
+            // Janelas maiores
             const windowLeft = new THREE.Mesh(
-                new THREE.PlaneGeometry(1.2, 0.8),
+                new THREE.PlaneGeometry(1.5, 1.0),
                 windowMaterial
             );
-            windowLeft.position.set(-2.2, 1.4, 3.02);
+            windowLeft.position.set(-2.8, 1.6, 4.02);
             cabanaGroup.add(windowLeft);
 
             const windowRight = windowLeft.clone();
-            windowRight.position.x = 2.2;
+            windowRight.position.x = 2.8;
             cabanaGroup.add(windowRight);
+            
+            // Janela traseira
+            const windowBack = new THREE.Mesh(
+                new THREE.PlaneGeometry(1.2, 0.9),
+                windowMaterial
+            );
+            windowBack.position.set(0, 1.5, -4.02);
+            windowBack.rotation.y = Math.PI;
+            cabanaGroup.add(windowBack);
 
             cabanaGroup.position.set(0, 0, -6);
             scene.add(cabanaGroup);
