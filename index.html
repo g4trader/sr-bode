@@ -1854,54 +1854,68 @@
 
         function criarModeloLeao() {
             const group = new THREE.Group();
+            // Materiais mais bonitos e vibrantes
             const furMaterial = new THREE.MeshStandardMaterial({ 
-                color: 0xe0b87a, 
-                roughness: 0.88,
-                metalness: 0.01
-            });
-            const maneMaterial = new THREE.MeshStandardMaterial({ 
-                color: 0x9d7a2a, 
-                roughness: 0.92,
-                metalness: 0.0
-            });
-            const eyeMaterial = new THREE.MeshStandardMaterial({
-                color: 0xffd700,
-                emissive: 0xffaa00,
-                emissiveIntensity: 0.7,
-                roughness: 0.2,
-                metalness: 0.1
-            });
-            const armMaterial = new THREE.MeshStandardMaterial({ 
-                color: 0xd0a870, 
-                roughness: 0.89,
-                metalness: 0.01
-            });
-            const pawMaterial = new THREE.MeshStandardMaterial({ 
-                color: 0x7a5a2a, 
+                color: 0xf0c890, 
                 roughness: 0.85,
                 metalness: 0.02
             });
+            const darkFurMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0xd0a870, 
+                roughness: 0.87,
+                metalness: 0.01
+            });
+            const maneMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0xb8954a, 
+                roughness: 0.9,
+                metalness: 0.0
+            });
+            const eyeMaterial = new THREE.MeshStandardMaterial({
+                color: 0xffe600,
+                emissive: 0xffcc00,
+                emissiveIntensity: 0.9,
+                roughness: 0.15,
+                metalness: 0.15
+            });
+            const armMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0xe0b880, 
+                roughness: 0.86,
+                metalness: 0.02
+            });
+            const pawMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0x8a6a3a, 
+                roughness: 0.82,
+                metalness: 0.03
+            });
 
-            // Corpo humanoide/bípede de leão - mais robusto e majestoso
-            const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.48, 0.65, 1.7, 22), furMaterial);
-            torso.position.y = 1.35;
+            // Corpo humanoide/bípede de leão - mais robusto, majestoso e bem proporcionado
+            const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.68, 1.8, 24), furMaterial);
+            torso.position.y = 1.4;
             group.add(torso);
 
-            // Peito musculoso
-            const chest = new THREE.Mesh(new THREE.CylinderGeometry(0.53, 0.58, 1.05, 22), furMaterial);
-            chest.position.set(0, 1.65, 0.18);
+            // Peito musculoso e imponente
+            const chest = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.62, 1.1, 24), darkFurMaterial);
+            chest.position.set(0, 1.7, 0.2);
             group.add(chest);
 
-            // Cintura/pelve
-            const pelvis = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.48, 0.45, 20), furMaterial);
-            pelvis.position.y = 0.75;
+            // Cintura/pelve mais definida
+            const pelvis = new THREE.Mesh(new THREE.CylinderGeometry(0.44, 0.5, 0.48, 22), furMaterial);
+            pelvis.position.y = 0.8;
             group.add(pelvis);
 
-            // Cabeça de leão mais detalhada
-            const head = new THREE.Mesh(new THREE.SphereGeometry(0.45, 22, 20), furMaterial);
-            head.scale.set(1.05, 1.0, 1.15);
-            head.position.set(0, 2.45, 0.28);
+            // Cabeça de leão mais bonita e expressiva
+            const head = new THREE.Mesh(new THREE.SphereGeometry(0.48, 24, 22), furMaterial);
+            head.scale.set(1.08, 1.0, 1.18);
+            head.position.set(0, 2.5, 0.3);
             group.add(head);
+            
+            // Bochechas mais definidas
+            for (const side of [-1, 1]) {
+                const cheek = new THREE.Mesh(new THREE.SphereGeometry(0.18, 16, 14), darkFurMaterial);
+                cheek.scale.set(1.0, 0.8, 1.2);
+                cheek.position.set(0.25 * side, 2.4, 0.4);
+                group.add(cheek);
+            }
 
             // Juba majestosa e volumosa - mais realista e natural
             // Camadas múltiplas de pelos para criar volume
@@ -1954,37 +1968,78 @@
                 group.add(frontMane);
             }
 
-            // Focinho de leão mais realista
-            const snout = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.25, 0.4), furMaterial);
-            snout.position.set(0, 2.35, 0.6);
+            // Focinho de leão mais bonito e realista
+            const snout = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.28, 0.45), darkFurMaterial);
+            snout.position.set(0, 2.38, 0.62);
+            snout.rotation.x = -0.05;
             group.add(snout);
+            
+            // Parte superior do focinho
+            const snoutTop = new THREE.Mesh(new THREE.BoxGeometry(0.33, 0.15, 0.35), furMaterial);
+            snoutTop.position.set(0, 2.48, 0.58);
+            group.add(snoutTop);
 
-            // Nariz
-            const nose = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.08, 0.1),
-                new THREE.MeshStandardMaterial({ color: 0x4a2a1a, roughness: 0.6 }));
-            nose.position.set(0, 2.32, 0.75);
+            // Nariz mais detalhado
+            const nose = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.1, 0.12),
+                new THREE.MeshStandardMaterial({ color: 0x3a1a0a, roughness: 0.5 }));
+            nose.position.set(0, 2.35, 0.78);
             group.add(nose);
-
-            // Olhos brilhantes e expressivos
+            
+            // Narinas
             for (const side of [-1, 1]) {
-                const eye = new THREE.Mesh(new THREE.SphereGeometry(0.12, 16, 16), eyeMaterial);
-                eye.position.set(0.18 * side, 2.48, 0.45);
-                group.add(eye);
-                
-                // Pupila
-                const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.06, 12, 12),
-                    new THREE.MeshStandardMaterial({ color: 0x000000 }));
-                pupil.position.set(0.19 * side, 2.49, 0.48);
-                group.add(pupil);
+                const nostril = new THREE.Mesh(new THREE.SphereGeometry(0.04, 8, 8),
+                    new THREE.MeshStandardMaterial({ color: 0x1a0a0a, roughness: 0.3 }));
+                nostril.position.set(side * 0.05, 2.35, 0.8);
+                group.add(nostril);
             }
 
-            // Orelhas de leão mais realistas
+            // Olhos brilhantes, expressivos e mais bonitos
             for (const side of [-1, 1]) {
-                const ear = new THREE.Mesh(new THREE.ConeGeometry(0.16, 0.35, 10), furMaterial);
-                ear.position.set(0.32 * side, 2.6, 0.2);
-                ear.rotation.z = -side * Math.PI / 4.5;
-                ear.rotation.x = -0.15;
+                // Olho principal
+                const eye = new THREE.Mesh(new THREE.SphereGeometry(0.13, 18, 18), eyeMaterial);
+                eye.position.set(0.2 * side, 2.52, 0.48);
+                group.add(eye);
+                
+                // Brilho no olho
+                const eyeGlow = new THREE.Mesh(new THREE.SphereGeometry(0.05, 10, 10),
+                    new THREE.MeshStandardMaterial({ 
+                        color: 0xffffff, 
+                        emissive: 0xffffff,
+                        emissiveIntensity: 0.8
+                    }));
+                eyeGlow.position.set(0.21 * side, 2.54, 0.5);
+                group.add(eyeGlow);
+                
+                // Pupila
+                const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.07, 14, 14),
+                    new THREE.MeshStandardMaterial({ color: 0x000000 }));
+                pupil.position.set(0.22 * side, 2.53, 0.52);
+                group.add(pupil);
+                
+                // Sobrancelha/área acima do olho
+                const eyebrow = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.04, 0.08),
+                    darkFurMaterial);
+                eyebrow.position.set(0.2 * side, 2.6, 0.45);
+                eyebrow.rotation.z = side * 0.1;
+                group.add(eyebrow);
+            }
+
+            // Orelhas de leão mais bonitas e realistas
+            for (const side of [-1, 1]) {
+                // Orelha externa
+                const ear = new THREE.Mesh(new THREE.ConeGeometry(0.18, 0.38, 12), furMaterial);
+                ear.position.set(0.35 * side, 2.65, 0.22);
+                ear.rotation.z = -side * Math.PI / 4.2;
+                ear.rotation.x = -0.18;
                 group.add(ear);
+                
+                // Parte interna da orelha (mais clara)
+                const earInner = new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.25, 10),
+                    new THREE.MeshStandardMaterial({ color: 0xf0d0a0, roughness: 0.8 }));
+                earInner.position.set(0.36 * side, 2.63, 0.25);
+                earInner.rotation.z = -side * Math.PI / 4.2;
+                earInner.rotation.x = -0.18;
+                group.add(earInner);
             }
 
             // Cauda de leão com tufo
