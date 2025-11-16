@@ -2088,6 +2088,10 @@
 
         async function lutarBodeCavalo() {
             gameState.cena_atual = 'luta_final';
+            
+            // Limpar qualquer atualização ativa que possa interferir
+            gameState.activeUpdate = null;
+            
             criarCenaCutsceneFinal();
             setAmbient(null);
             const scene = gameState.scene;
@@ -2109,11 +2113,20 @@
             scene.add(bodeGlow);
 
             mostrarDialogo('O Senhor Bode se aproxima com fúria, seus olhos amarelos brilhando na escuridão...');
+            await new Promise(resolve => setTimeout(resolve, 2000));
             
             // Animação de aproximação do Bode com rotação
             const bodeStart = bode.position.clone();
             const bodeMid = new THREE.Vector3(-1.5, 0, -3.5);
-            await animateModelMove(bode, bodeStart, bodeMid, 2.0);
+            
+            // Garantir que a animação funcione mesmo se o loop estiver pausado
+            try {
+                await animateModelMove(bode, bodeStart, bodeMid, 2.0);
+            } catch (error) {
+                console.error('Erro na animação do bode:', error);
+                // Fallback: mover diretamente
+                bode.position.copy(bodeMid);
+            }
             bode.rotation.y = Math.PI / 4;
             audioManager.playEffect('perigo');
             await new Promise(resolve => setTimeout(resolve, 1000));
