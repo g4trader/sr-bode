@@ -632,7 +632,8 @@
             fome: 100,
             lastCansacoSound: 0,
             comodosExplorados: 0,
-            isRunning: false
+            isRunning: false,
+            festaAconteceu: false
         };
 
         const sceneHelpers = {
@@ -657,6 +658,7 @@
             gameState.lastCansacoSound = 0;
             gameState.comodosExplorados = 0;
             gameState.isRunning = false;
+            gameState.festaAconteceu = false;
         }
 
         function reiniciarJogo() {
@@ -1340,79 +1342,91 @@
         function criarModeloLobo() {
             const group = new THREE.Group();
 
-            // Materiais melhorados estilo Forest Survival
+            // Materiais mais realistas de lobo
             const furMaterial = new THREE.MeshStandardMaterial({ 
-                color: 0x2a2a2a, 
-                roughness: 0.85,
+                color: 0x3a3a3a, 
+                roughness: 0.87,
                 metalness: 0.02
             });
             const darkFur = new THREE.MeshStandardMaterial({ 
+                color: 0x2a2a2a, 
+                roughness: 0.85,
+                metalness: 0.01
+            });
+            const muzzleMaterial = new THREE.MeshStandardMaterial({ 
                 color: 0x1a1a1a, 
-                roughness: 0.82,
+                roughness: 0.8,
                 metalness: 0.01
             });
             const glowMaterial = new THREE.MeshStandardMaterial({
                 color: 0xff6666,
                 emissive: 0xff4444,
-                emissiveIntensity: 1.1,
+                emissiveIntensity: 1.2,
                 roughness: 0.3,
                 metalness: 0.1
             });
             const armMaterial = new THREE.MeshStandardMaterial({ 
-                color: 0x1a1a1a, 
-                roughness: 0.88,
+                color: 0x2a2a2a, 
+                roughness: 0.89,
                 metalness: 0.01
             });
             const pawMaterial = new THREE.MeshStandardMaterial({ 
-                color: 0x0f0f0f, 
-                roughness: 0.8,
+                color: 0x1a1a1a, 
+                roughness: 0.82,
                 metalness: 0.02
             });
 
-            // Corpo humanoide/bípede de lobo
-            const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.55, 1.5, 16), furMaterial);
-            torso.position.y = 1.2;
+            // Corpo humanoide/bípede de lobo - mais esguio e ágil
+            const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.58, 1.6, 20), furMaterial);
+            torso.position.y = 1.25;
             group.add(torso);
 
-            const chest = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.5, 0.8, 16), darkFur);
-            chest.position.set(0, 1.5, 0.1);
+            const chest = new THREE.Mesh(new THREE.CylinderGeometry(0.48, 0.52, 0.85, 20), darkFur);
+            chest.position.set(0, 1.55, 0.12);
             group.add(chest);
 
             // Cintura/pelve
-            const pelvis = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.4, 0.35, 16), furMaterial);
-            pelvis.position.y = 0.6;
+            const pelvis = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.42, 0.38, 18), furMaterial);
+            pelvis.position.y = 0.65;
             group.add(pelvis);
 
-            // Cabeça de lobo mais realista
-            const head = new THREE.Mesh(new THREE.SphereGeometry(0.38, 18, 16), furMaterial);
-            head.position.set(0, 2.1, 0.15);
+            // Cabeça de lobo mais realista - mais alongada
+            const head = new THREE.Mesh(new THREE.SphereGeometry(0.4, 20, 18), furMaterial);
+            head.scale.set(1.1, 1.0, 1.2);
+            head.position.set(0, 2.15, 0.18);
             group.add(head);
 
-            // Focinho de lobo
-            const muzzle = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.2, 0.5, 14), darkFur);
+            // Focinho de lobo mais longo e realista
+            const muzzle = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.22, 0.6, 16), muzzleMaterial);
             muzzle.rotation.x = Math.PI / 2;
-            muzzle.position.set(0, 2.0, 0.55);
+            muzzle.position.set(0, 2.05, 0.65);
             group.add(muzzle);
 
-            // Orelhas de lobo pontiagudas
+            // Nariz preto
+            const nose = new THREE.Mesh(new THREE.SphereGeometry(0.06, 10, 10),
+                new THREE.MeshStandardMaterial({ color: 0x000000, roughness: 0.5 }));
+            nose.position.set(0, 2.0, 0.85);
+            group.add(nose);
+
+            // Orelhas de lobo mais pontiagudas e realistas
             for (const side of [-1, 1]) {
-                const ear = new THREE.Mesh(new THREE.ConeGeometry(0.14, 0.4, 8), darkFur);
-                ear.position.set(0.22 * side, 2.25, 0.05);
-                ear.rotation.set(Math.PI / 2.3, 0, -side * 0.35);
+                const ear = new THREE.Mesh(new THREE.ConeGeometry(0.16, 0.45, 10), darkFur);
+                ear.position.set(0.25 * side, 2.3, 0.08);
+                ear.rotation.set(Math.PI / 2.2, 0, -side * 0.4);
                 group.add(ear);
             }
 
-            // Olhos brilhantes de lobo
+            // Olhos brilhantes de lobo - mais expressivos
             for (const side of [-1, 1]) {
-                const eye = new THREE.Mesh(new THREE.SphereGeometry(0.1, 14, 14), glowMaterial);
-                eye.position.set(0.15 * side, 2.05, 0.35);
+                const eye = new THREE.Mesh(new THREE.SphereGeometry(0.11, 16, 16), glowMaterial);
+                eye.position.set(0.18 * side, 2.1, 0.38);
                 group.add(eye);
             }
 
-            // Cauda de lobo
-            const tail = new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.7, 10), furMaterial);
-            tail.position.set(0, 0.8, -0.45);
-            tail.rotation.x = -Math.PI / 3;
+            // Cauda de lobo mais peluda
+            const tail = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.85, 12), furMaterial);
+            tail.position.set(0, 0.85, -0.5);
+            tail.rotation.x = -Math.PI / 2.8;
             group.add(tail);
 
             // Braços humanos de lobo
@@ -1543,16 +1557,29 @@
             head.position.set(0, 2.6, 0.25);
             group.add(head);
 
-            // Focinho mais detalhado
-            const snout = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.22, 0.55, 16), accentFur);
+            // Focinho mais detalhado e realista de bode
+            const snout = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.24, 0.6, 18), accentFur);
             snout.rotation.x = Math.PI / 2;
-            snout.position.set(0, 2.5, 0.65);
+            snout.position.set(0, 2.48, 0.68);
             group.add(snout);
 
-            // Barba mais realista
-            const beard = new THREE.Mesh(new THREE.ConeGeometry(0.2, 0.75, 12), accentFur);
-            beard.position.set(0, 2.3, 0.5);
+            // Narinas de bode
+            for (const side of [-1, 1]) {
+                const nostril = new THREE.Mesh(new THREE.SphereGeometry(0.04, 8, 8),
+                    new THREE.MeshStandardMaterial({ color: 0x0a0a0a, roughness: 0.4 }));
+                nostril.position.set(side * 0.06, 2.48, 0.88);
+                group.add(nostril);
+            }
+
+            // Barba mais realista e volumosa
+            const beard = new THREE.Mesh(new THREE.ConeGeometry(0.22, 0.85, 14), accentFur);
+            beard.position.set(0, 2.25, 0.52);
             group.add(beard);
+            
+            // Detalhes na barba
+            const beardDetail = new THREE.Mesh(new THREE.ConeGeometry(0.18, 0.65, 12), accentFur);
+            beardDetail.position.set(0, 2.15, 0.48);
+            group.add(beardDetail);
 
             // Orelhas de bode
             for (const side of [-1, 1]) {
@@ -2007,49 +2034,78 @@
         function criarModeloCobra() {
             const group = new THREE.Group();
             const scaleMaterial = new THREE.MeshStandardMaterial({ 
-                color: 0x4a7c59, 
-                roughness: 0.7,
+                color: 0x5a8a6a, 
+                roughness: 0.75,
+                metalness: 0.08
+            });
+            const darkScaleMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0x3a5a4a, 
+                roughness: 0.78,
                 metalness: 0.1
             });
             const eyeMaterial = new THREE.MeshStandardMaterial({
                 color: 0xff0000,
                 emissive: 0xff3333,
-                emissiveIntensity: 0.6,
+                emissiveIntensity: 0.7,
                 roughness: 0.3
             });
+            const tongueMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0xff0000,
+                roughness: 0.4
+            });
 
-            // Corpo longo (serpente)
-            const bodySegments = 8;
+            // Corpo longo (serpente) - mais segmentos e mais realista
+            const bodySegments = 12;
             for (let i = 0; i < bodySegments; i++) {
                 const segment = new THREE.Mesh(
-                    new THREE.CylinderGeometry(0.2 - i * 0.02, 0.22 - i * 0.02, 0.4, 12),
-                    scaleMaterial
+                    new THREE.CylinderGeometry(0.22 - i * 0.015, 0.24 - i * 0.015, 0.45, 14),
+                    i % 2 === 0 ? scaleMaterial : darkScaleMaterial // Padrão de escamas
                 );
-                segment.position.set(0, 0.3, -i * 0.35);
-                segment.rotation.z = Math.sin(i * 0.3) * 0.2;
+                segment.position.set(0, 0.35, -i * 0.38);
+                segment.rotation.z = Math.sin(i * 0.25) * 0.15;
+                segment.castShadow = true;
+                segment.receiveShadow = true;
                 group.add(segment);
             }
 
-            // Cabeça
-            const head = new THREE.Mesh(new THREE.SphereGeometry(0.25, 16, 14), scaleMaterial);
-            head.position.set(0, 0.3, 0.4);
+            // Cabeça triangular de cobra mais realista
+            const head = new THREE.Mesh(new THREE.ConeGeometry(0.28, 0.5, 8), scaleMaterial);
+            head.rotation.x = Math.PI / 2;
+            head.position.set(0, 0.35, 0.5);
             group.add(head);
 
-            // Olhos
+            // Parte superior da cabeça
+            const headTop = new THREE.Mesh(new THREE.SphereGeometry(0.22, 14, 12), scaleMaterial);
+            headTop.scale.set(1.2, 0.6, 1.0);
+            headTop.position.set(0, 0.5, 0.4);
+            group.add(headTop);
+
+            // Olhos de cobra mais realistas
             for (const side of [-1, 1]) {
-                const eye = new THREE.Mesh(new THREE.SphereGeometry(0.06, 10, 10), eyeMaterial);
-                eye.position.set(0.1 * side, 0.32, 0.5);
+                const eye = new THREE.Mesh(new THREE.SphereGeometry(0.08, 12, 12), eyeMaterial);
+                eye.position.set(0.12 * side, 0.48, 0.52);
                 group.add(eye);
             }
 
-            // Língua bifurcada
-            const tongue = new THREE.Mesh(
-                new THREE.ConeGeometry(0.03, 0.15, 6),
-                new THREE.MeshStandardMaterial({ color: 0xff0000 })
+            // Língua bifurcada mais realista
+            const tongueBase = new THREE.Mesh(
+                new THREE.CylinderGeometry(0.02, 0.04, 0.12, 6),
+                tongueMaterial
             );
-            tongue.position.set(0, 0.28, 0.6);
-            tongue.rotation.x = Math.PI / 2;
-            group.add(tongue);
+            tongueBase.position.set(0, 0.38, 0.7);
+            tongueBase.rotation.x = Math.PI / 2;
+            group.add(tongueBase);
+            
+            for (const side of [-1, 1]) {
+                const tongueFork = new THREE.Mesh(
+                    new THREE.ConeGeometry(0.015, 0.18, 6),
+                    tongueMaterial
+                );
+                tongueFork.position.set(side * 0.03, 0.38, 0.82);
+                tongueFork.rotation.x = Math.PI / 2;
+                tongueFork.rotation.z = side * Math.PI / 8;
+                group.add(tongueFork);
+            }
 
             group.traverse((obj) => {
                 if (obj.isMesh) {
@@ -2116,19 +2172,30 @@
             head.position.set(1.15, 2.5, 0.4);
             group.add(head);
 
-            // Focinho de cavalo mais realista
-            const muzzle = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.25, 0.55, 16), bodyMaterial);
-            muzzle.position.set(1.4, 2.3, 0.55);
+            // Focinho de cavalo mais realista e alongado
+            const muzzle = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.28, 0.65, 18), bodyMaterial);
+            muzzle.position.set(1.5, 2.28, 0.58);
             muzzle.rotation.x = Math.PI / 2;
             group.add(muzzle);
 
-            // Narinas
+            // Parte superior do focinho
+            const muzzleTop = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.18, 0.4), bodyMaterial);
+            muzzleTop.position.set(1.5, 2.38, 0.55);
+            group.add(muzzleTop);
+
+            // Narinas mais realistas
             for (const side of [-1, 1]) {
-                const nostril = new THREE.Mesh(new THREE.SphereGeometry(0.05, 8, 8), 
-                    new THREE.MeshStandardMaterial({ color: 0x000000 }));
-                nostril.position.set(1.4, 2.3, 0.6 + side * 0.08);
+                const nostril = new THREE.Mesh(new THREE.SphereGeometry(0.06, 10, 10), 
+                    new THREE.MeshStandardMaterial({ color: 0x1a0a0a, roughness: 0.3 }));
+                nostril.position.set(1.5, 2.28, 0.62 + side * 0.09);
                 group.add(nostril);
             }
+            
+            // Lábio superior
+            const upperLip = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.08, 0.12),
+                new THREE.MeshStandardMaterial({ color: 0x6a4a2a, roughness: 0.7 }));
+            upperLip.position.set(1.5, 2.22, 0.68);
+            group.add(upperLip);
 
             // Crina (juba) de cavalo mais volumosa e detalhada
             for (let i = 0; i < 5; i++) {
@@ -4618,8 +4685,11 @@
             scene.remove(bodeLight);
             gameState.bodeNoMercado = false;
             
-            // Nova cena: Festa na casa do Senhor Bode
-            await festaNaCasa();
+            // Nova cena: Festa na casa do Senhor Bode (só acontece uma vez)
+            if (!gameState.festaAconteceu) {
+                await festaNaCasa();
+                gameState.festaAconteceu = true;
+            }
         }
 
         async function festaNaCasa() {
