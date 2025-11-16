@@ -2701,13 +2701,15 @@
             const scene = gameState.scene;
             clearScene();
 
-            scene.background = new THREE.Color(0x010308);
-            scene.fog = new THREE.FogExp2(0x010308, 0.06);
+            // Fundo mais claro para melhor visibilidade
+            scene.background = new THREE.Color(0x0a1520);
+            // Nevoeiro reduzido para maior clareza
+            scene.fog = new THREE.FogExp2(0x0a1520, 0.03);
 
-            addCommonLights(scene, { intensity: 0.75, warm: false });
+            addCommonLights(scene, { intensity: 1.0, warm: false });
 
-            // Iluminação mais realista estilo The Forest
-            const moonLight = new THREE.DirectionalLight(0x1a2d4a, 0.7);
+            // Iluminação mais clara e brilhante
+            const moonLight = new THREE.DirectionalLight(0x3a5d7a, 1.2);
             moonLight.position.set(-12, 25, -8);
             moonLight.castShadow = true;
             moonLight.shadow.mapSize.set(2048, 2048);
@@ -2720,11 +2722,25 @@
             moonLight.shadow.bias = -0.0001;
             scene.add(moonLight);
 
-            const rimLight = new THREE.PointLight(0x2a4a6f, 0.5, 40, 1.8);
+            // Luz adicional de cima para vista top-down mais clara
+            const topLight = new THREE.DirectionalLight(0x4a6d8a, 0.8);
+            topLight.position.set(0, 30, 0);
+            topLight.castShadow = true;
+            topLight.shadow.mapSize.set(1024, 1024);
+            topLight.shadow.camera.near = 0.5;
+            topLight.shadow.camera.far = 200;
+            topLight.shadow.camera.left = -50;
+            topLight.shadow.camera.right = 50;
+            topLight.shadow.camera.top = 50;
+            topLight.shadow.camera.bottom = -50;
+            scene.add(topLight);
+
+            const rimLight = new THREE.PointLight(0x4a6a8f, 0.8, 50, 1.5);
             rimLight.position.set(8, 8, -3);
             scene.add(rimLight);
 
-            const ambientFill = new THREE.HemisphereLight(0x0a1a1f, 0x020408, 0.4);
+            // Luz ambiente mais clara
+            const ambientFill = new THREE.HemisphereLight(0x1a2a3f, 0x0a1520, 0.7);
             scene.add(ambientFill);
 
             // Chão dinâmico que se estende conforme a distância - usando função melhorada
@@ -2732,37 +2748,37 @@
             const groundWidth = 200;
             const groundDepth = distanciaMaxima + 100;
             
-            // Usar createGround para ter terreno variado e melhor qualidade
-            const baseGround = createGround(groundWidth, groundDepth, 0x0a1a12);
+            // Usar createGround para ter terreno variado e melhor qualidade - mais claro
+            const baseGround = createGround(groundWidth, groundDepth, 0x1a2a22);
             baseGround.position.z = -groundDepth / 2;
             scene.add(baseGround);
             scene.userData.baseGround = baseGround;
             scene.userData.groundDepth = groundDepth;
 
-            // Materiais melhorados estilo The Forest - mais realistas
+            // Materiais mais claros e com melhor contraste para visibilidade
             const pathMaterial = new THREE.MeshStandardMaterial({ 
-                color: 0x1a1710, 
-                roughness: 0.98,
+                color: 0x2a2720, 
+                roughness: 0.95,
                 metalness: 0.05
             });
             const rootsMaterial = new THREE.MeshStandardMaterial({ 
-                color: 0x1f0f04, 
-                roughness: 0.92,
+                color: 0x2f1f14, 
+                roughness: 0.90,
                 metalness: 0.02
             });
             const stoneMaterial = new THREE.MeshStandardMaterial({ 
-                color: 0x3d3a32, 
-                roughness: 0.88,
+                color: 0x4d4a42, 
+                roughness: 0.85,
                 metalness: 0.08
             });
             const troncoMaterial = new THREE.MeshStandardMaterial({ 
-                color: 0x25150a, 
-                roughness: 0.94,
+                color: 0x35251a, 
+                roughness: 0.92,
                 metalness: 0.03
             });
             const copaMaterial = new THREE.MeshStandardMaterial({ 
-                color: 0x051408, 
-                roughness: 0.85,
+                color: 0x152418, 
+                roughness: 0.82,
                 metalness: 0.01
             });
 
@@ -2915,9 +2931,9 @@
                 const fogPlane = new THREE.Mesh(
                     new THREE.PlaneGeometry(14, 5),
                     new THREE.MeshStandardMaterial({
-                        color: 0x0f141f,
+                        color: 0x1f243f,
                         transparent: true,
-                        opacity: 0.28,
+                        opacity: 0.15, // Reduzido para mais clareza
                         side: THREE.DoubleSide,
                         depthWrite: false
                     })
@@ -2937,9 +2953,9 @@
                 const fogPlane = new THREE.Mesh(
                     new THREE.PlaneGeometry(16, 6),
                     new THREE.MeshStandardMaterial({
-                        color: 0x0f141f,
+                        color: 0x1f243f,
                         transparent: true,
-                        opacity: 0.24,
+                        opacity: 0.12, // Reduzido para mais clareza
                         side: THREE.DoubleSide,
                         depthWrite: false
                     })
@@ -2979,7 +2995,8 @@
             bodeGroup.position.set(0, 0, gameState.proximidade_sr_bode * 0.1 - 20);
             scene.add(bodeGroup);
 
-            const bodeGlow = new THREE.PointLight(0xfcdc6b, 2.2, 18, 2.3);
+            // Luz mais brilhante para melhor visibilidade na vista de cima
+            const bodeGlow = new THREE.PointLight(0xfcdc6b, 3.5, 25, 1.8);
             bodeGlow.position.set(0, 2.4, bodeGroup.position.z);
             scene.add(bodeGlow);
             scene.userData.bode = bodeGroup;
