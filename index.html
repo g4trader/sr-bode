@@ -4620,6 +4620,9 @@
             gameState.isRunning = true;
 
             document.getElementById('title-screen').classList.add('hidden');
+            document.getElementById('death-screen').classList.add('hidden');
+            document.getElementById('victory-screen').classList.add('hidden');
+            document.getElementById('ui-container').style.display = 'block';
             initThreeJS();
             await audioManager.resume();
             gameState.audioUnlocked = audioManager.unlocked;
