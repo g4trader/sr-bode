@@ -3168,12 +3168,12 @@
             criarCenaCabana();
             const scene = gameState.scene;
             const bode = criarModeloBode();
-            // Reduzir escala para caber na porta maior (1.8x2.8)
-            bode.scale.set(1.0, 1.0, 1.0);
-            // Posição ajustada para a cabana maior (porta está em z=4.1 relativo à cabana, cabana em z=-6)
-            bode.position.set(0, 0, -1.9); // Posição inicial mais próxima da porta
+            // Reduzir escala para caber na porta maior (1.8x2.8) - altura porta é 2.8
+            bode.scale.set(0.9, 0.9, 0.9);
+            // Posição ajustada: porta está em (1.0, 0, -1.9) na cena (cabana em z=-6, porta em z=4.1 relativo)
+            bode.position.set(1.0, 0, -0.5); // Posição inicial mais distante da porta
             const bodeLight = new THREE.PointLight(0xffd15a, 1.6, 8, 2.2);
-            bodeLight.position.set(0, 2.2, -1.9);
+            bodeLight.position.set(1.0, 2.2, -0.5);
             scene.add(bode);
             scene.add(bodeLight);
             const doorPivot = scene.userData?.doorPivot;
@@ -3181,8 +3181,9 @@
                 doorPivot.rotation.y = 0;
                 await animateDoor(doorPivot, 0, -Math.PI / 1.6, 1.8);
             }
-            // Mover para posição na porta (porta está em z=-1.9 relativo à cena)
-            await animateModelMove(bode, bode.position.clone(), new THREE.Vector3(0, 0, -1.9), 2.4);
+            // Mover para posição na porta (porta está em x=1.0, z=-1.9)
+            await animateModelMove(bode, bode.position.clone(), new THREE.Vector3(1.0, 0, -1.9), 2.4);
+            bodeLight.position.set(1.0, 2.2, -1.9);
 
             const { base, look } = getSceneCameraBase();
             mostrarDialogo('Você se aproxima da porta; batidas ecoam e o Senhor Bode atende.\n"Oi, você está perdido?"\n\nEle permite que você fique, mas com 3 regras:\n1 - Não saia do seu quarto à noite\n2 - Não desrespeite o Senhor Bode\n3 - Não fale com o Senhor Lobo');
