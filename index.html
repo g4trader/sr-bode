@@ -1683,7 +1683,7 @@
                             const direction = new THREE.Vector3();
                             direction.subVectors(target, model.position);
                             if (direction.length() > 0.01) {
-                                model.lookAt(target.x, model.position.y, target.z);
+                    model.lookAt(target.x, model.position.y, target.z);
                             }
                         }
                     } catch (e) {
@@ -1702,18 +1702,18 @@
                             return;
                         }
                         
-                        const elapsed = (now - start) / (duration * 1000);
-                        const t = Math.min(Math.max(elapsed, 0), 1);
-                        model.position.lerpVectors(origin, target, t);
-                        updateRotation();
+                    const elapsed = (now - start) / (duration * 1000);
+                    const t = Math.min(Math.max(elapsed, 0), 1);
+                    model.position.lerpVectors(origin, target, t);
+                    updateRotation();
                         
-                        if (t < 1) {
+                    if (t < 1) {
                             animationFrameId = requestAnimationFrame(step);
-                        } else {
+                    } else {
                             model.position.copy(target);
                             if (timeoutId) clearTimeout(timeoutId);
-                            resolve();
-                        }
+                        resolve();
+                    }
                     } catch (error) {
                         console.error('Erro na animação:', error);
                         if (animationFrameId) cancelAnimationFrame(animationFrameId);
@@ -3159,16 +3159,16 @@
                     const alturaCopa = alturaTronco * 0.7 + i * 0.9;
                     const detalhes = 8 + Math.floor(Math.random() * 4);
                     
-                    const crown = new THREE.Mesh(
+                const crown = new THREE.Mesh(
                         new THREE.ConeGeometry(escala, 2.5 + Math.random() * 0.5, detalhes),
-                        treeMaterialCrown
-                    );
+                    treeMaterialCrown
+                );
                     crown.position.y = alturaCopa;
                     crown.rotation.y = Math.random() * Math.PI;
                     crown.rotation.x = (Math.random() - 0.5) * 0.2;
                     crown.castShadow = true;
                     crown.receiveShadow = true;
-                    tree.add(crown);
+                tree.add(crown);
                 }
                 
                 tree.position.set(x, 0, z);
@@ -3440,10 +3440,10 @@
             const scene = gameState.scene;
             clearScene();
 
-            // Fundo mais claro para melhor visibilidade
-            scene.background = new THREE.Color(0x0a1520);
-            // Nevoeiro reduzido para maior clareza
-            scene.fog = new THREE.FogExp2(0x0a1520, 0.03);
+            // Fundo verde (floresta) para mais realismo
+            scene.background = new THREE.Color(0x1a3a2a);
+            // Nevoeiro verde suave
+            scene.fog = new THREE.FogExp2(0x1a3a2a, 0.025);
 
             addCommonLights(scene, { intensity: 1.0, warm: false });
 
@@ -3478,46 +3478,51 @@
             rimLight.position.set(8, 8, -3);
             scene.add(rimLight);
 
-            // Luz ambiente mais clara
-            const ambientFill = new THREE.HemisphereLight(0x1a2a3f, 0x0a1520, 0.7);
+            // Luz ambiente verde (floresta)
+            const ambientFill = new THREE.HemisphereLight(0x4a6a5a, 0x1a3a2a, 0.8);
             scene.add(ambientFill);
+            
+            // Luz verde adicional para atmosfera de floresta
+            const forestLight = new THREE.DirectionalLight(0x5a8a6a, 0.4);
+            forestLight.position.set(0, 15, 10);
+            scene.add(forestLight);
 
             // Chão dinâmico que se estende conforme a distância - usando função melhorada
             const distanciaMaxima = Math.max(220, gameState.distancia_cidade + 50);
             const groundWidth = 200;
             const groundDepth = distanciaMaxima + 100;
             
-            // Usar createGround para ter terreno variado e melhor qualidade - mais claro
-            const baseGround = createGround(groundWidth, groundDepth, 0x1a2a22);
+            // Usar createGround para ter terreno variado e melhor qualidade - verde floresta
+            const baseGround = createGround(groundWidth, groundDepth, 0x2a4a32);
             baseGround.position.z = -groundDepth / 2;
             scene.add(baseGround);
             scene.userData.baseGround = baseGround;
             scene.userData.groundDepth = groundDepth;
 
-            // Materiais mais claros e com melhor contraste para visibilidade
+            // Materiais mais realistas e naturais
             const pathMaterial = new THREE.MeshStandardMaterial({ 
-                color: 0x2a2720, 
-                roughness: 0.95,
-                metalness: 0.05
+                color: 0x3a3528, 
+                roughness: 0.96,
+                metalness: 0.03
             });
             const rootsMaterial = new THREE.MeshStandardMaterial({ 
-                color: 0x2f1f14, 
-                roughness: 0.90,
+                color: 0x2a1f14, 
+                roughness: 0.92,
                 metalness: 0.02
             });
             const stoneMaterial = new THREE.MeshStandardMaterial({ 
-                color: 0x4d4a42, 
-                roughness: 0.85,
-                metalness: 0.08
+                color: 0x5a5548, 
+                roughness: 0.88,
+                metalness: 0.06
             });
             const troncoMaterial = new THREE.MeshStandardMaterial({ 
-                color: 0x35251a, 
-                roughness: 0.92,
-                metalness: 0.03
+                color: 0x3d2a1a, 
+                roughness: 0.94,
+                metalness: 0.02
             });
             const copaMaterial = new THREE.MeshStandardMaterial({ 
-                color: 0x152418, 
-                roughness: 0.82,
+                color: 0x1a3a1f, 
+                roughness: 0.85,
                 metalness: 0.01
             });
 
@@ -3528,13 +3533,13 @@
 
             function criarArvoreSombriaFuga() {
                 const grupo = new THREE.Group();
-                const alturaTronco = 5.8 + Math.random() * 1.2;
-                const larguraBase = 0.42 + Math.random() * 0.1;
-                const larguraTopo = 0.28 + Math.random() * 0.08;
+                const alturaTronco = 6.5 + Math.random() * 2.0;
+                const larguraBase = 0.45 + Math.random() * 0.15;
+                const larguraTopo = 0.3 + Math.random() * 0.1;
 
                 // Tronco mais detalhado com mais segmentos
                 const tronco = new THREE.Mesh(
-                    new THREE.CylinderGeometry(larguraTopo, larguraBase, alturaTronco, 12),
+                    new THREE.CylinderGeometry(larguraTopo, larguraBase, alturaTronco, 16),
                     troncoMaterial
                 );
                 tronco.position.y = alturaTronco / 2;
@@ -3564,34 +3569,34 @@
                     grupo.add(galho);
                 }
 
-                // Copas mais naturais e variadas
-                const camadas = 4 + Math.floor(Math.random() * 3);
+                // Copas mais naturais, variadas e volumosas
+                const camadas = 5 + Math.floor(Math.random() * 4);
                 for (let i = 0; i < camadas; i++) {
-                    const escala = 2.4 - i * 0.4 + Math.random() * 0.3;
-                    const alturaCopa = alturaTronco * 0.7 + i * 0.9;
-                    const detalhes = 8 + Math.floor(Math.random() * 4);
+                    const escala = 2.8 - i * 0.35 + Math.random() * 0.4;
+                    const alturaCopa = alturaTronco * 0.65 + i * 1.0;
+                    const detalhes = 10 + Math.floor(Math.random() * 6);
                     
                     const copa = new THREE.Mesh(
-                        new THREE.ConeGeometry(escala, 2.5 + Math.random() * 0.5, detalhes),
+                        new THREE.ConeGeometry(escala, 2.8 + Math.random() * 0.7, detalhes),
                         copaMaterial
                     );
                     copa.position.y = alturaCopa;
                     copa.rotation.y = Math.random() * Math.PI;
-                    copa.rotation.x = (Math.random() - 0.5) * 0.2;
+                    copa.rotation.x = (Math.random() - 0.5) * 0.25;
                     copa.castShadow = true;
                     copa.receiveShadow = true;
                     grupo.add(copa);
                     
                     // Copas secundárias menores para mais realismo
-                    if (i > 0 && Math.random() > 0.5) {
+                    if (i > 0 && Math.random() > 0.4) {
                         const copaSec = new THREE.Mesh(
-                            new THREE.ConeGeometry(escala * 0.6, 1.5, detalhes - 2),
+                            new THREE.ConeGeometry(escala * 0.65, 1.6, detalhes - 2),
                             copaMaterial
                         );
                         copaSec.position.set(
-                            (Math.random() - 0.5) * escala * 0.8,
-                            alturaCopa - 0.3,
-                            (Math.random() - 0.5) * escala * 0.8
+                            (Math.random() - 0.5) * escala * 0.9,
+                            alturaCopa - 0.4,
+                            (Math.random() - 0.5) * escala * 0.9
                         );
                         copaSec.rotation.y = Math.random() * Math.PI;
                         copaSec.castShadow = true;
@@ -3614,9 +3619,14 @@
                         const escala = 0.2 + Math.random() * 0.3;
                         child.scale.set(escala, escala, escala);
                     } else if (child.userData?.type === 'tree') {
+                        // Árvores mais próximas da estrada, distribuídas nas laterais
                         const side = Math.random() > 0.5 ? 1 : -1;
-                        child.position.set(side * (6.5 + Math.random() * 5), 0, (Math.random() - 0.5) * segmentLength);
+                        const distanceFromPath = 3.5 + Math.random() * 8; // Mais próximo da estrada
+                        child.position.set(side * distanceFromPath, 0, (Math.random() - 0.5) * segmentLength);
                         child.rotation.y = Math.random() * Math.PI;
+                        // Variação de escala para mais realismo
+                        const scale = 0.8 + Math.random() * 0.4;
+                        child.scale.set(scale, scale, scale);
                     } else if (child.userData?.type === 'fog') {
                         child.position.set((Math.random() - 0.5) * 14, 1.6 + Math.random() * 1.2, (Math.random() - 0.5) * 10);
                         child.material.opacity = 0.22 + Math.random() * 0.06;
@@ -3661,7 +3671,8 @@
                     segment.add(stone);
                 }
 
-                for (let t = 0; t < 4; t++) {
+                // Mais árvores ao lado da estrada - densidade aumentada
+                for (let t = 0; t < 8; t++) {
                     const tree = criarArvoreSombriaFuga();
                     tree.userData.type = 'tree';
                     segment.add(tree);
@@ -3670,9 +3681,9 @@
                 const fogPlane = new THREE.Mesh(
                     new THREE.PlaneGeometry(14, 5),
                     new THREE.MeshStandardMaterial({
-                        color: 0x1f243f,
+                        color: 0x2a4a3a,
                         transparent: true,
-                        opacity: 0.15, // Reduzido para mais clareza
+                        opacity: 0.18, // Nevoeiro verde suave
                         side: THREE.DoubleSide,
                         depthWrite: false
                     })
@@ -3692,9 +3703,9 @@
                 const fogPlane = new THREE.Mesh(
                     new THREE.PlaneGeometry(16, 6),
                     new THREE.MeshStandardMaterial({
-                        color: 0x1f243f,
+                        color: 0x2a4a3a,
                         transparent: true,
-                        opacity: 0.12, // Reduzido para mais clareza
+                        opacity: 0.15, // Nevoeiro verde suave
                         side: THREE.DoubleSide,
                         depthWrite: false
                     })
@@ -5076,7 +5087,7 @@
             let resgatado = false;
 
             // Criar cena uma vez antes do loop para evitar tela preta
-            criarCenaFuga();
+                criarCenaFuga();
             
             while (true) {
                 // Não recriar a cena a cada loop para evitar tela preta
