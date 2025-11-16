@@ -3791,21 +3791,41 @@
                         lookAt: hubPickCamera.look.clone()
                     }
                 ], { duration: 1.4 });
+                
+                // Contar quantas comidas já foram escolhidas
+                const comidasEscolhidas = escolhas.filter(item => item === 'Comida').length;
+                
+                // Filtrar opções: remover Comida se já tiver 2
+                const opcoesDisponiveis = comidasEscolhidas >= 2 
+                    ? opcoes.filter(item => item !== 'Comida')
+                    : opcoes;
+                
                 let dialogo = `Você pode pegar 2 itens antes da fuga.\nEscolha mais ${2 - escolhas.length} item(s).`;
                 if (escolhas.length > 0) {
                     dialogo += `\nVocê já escolheu: ${escolhas.join(', ')}`;
                 }
+                if (comidasEscolhidas >= 2) {
+                    dialogo += `\n(Você já pegou o máximo de 2 comidas)`;
+                }
                 mostrarDialogo(dialogo);
-                mostrarEscolhas(opcoes.map((item, i) => `${i + 1} - ${item}`));
+                mostrarEscolhas(opcoesDisponiveis.map((item, i) => `${i + 1} - ${item}`));
                 atualizarInventario();
                 
                 const escolha = await aguardarEscolha();
                 await playActionNod(0.35);
                 esconderEscolhas();
                 
-                if (escolha < opcoes.length) {
-                    const item = opcoes[escolha];
-                    if (!escolhas.includes(item)) {
+                if (escolha < opcoesDisponiveis.length) {
+                    const item = opcoesDisponiveis[escolha];
+                    const comidasAtuais = escolhas.filter(i => i === 'Comida').length;
+                    
+                    // Verificar se pode pegar o item
+                    if (item === 'Comida' && comidasAtuais >= 2) {
+                        mostrarDialogo('Você não pode pegar mais de 2 comidas!');
+                        audioManager.playEffect('perigo');
+                        await new Promise(resolve => setTimeout(resolve, 1500));
+                    } else {
+                        // Permitir pegar o item (pode pegar 2 comidas se quiser)
                         escolhas.push(item);
                     }
                 }
