@@ -2073,23 +2073,31 @@
         function criarCenaCabana() {
             const scene = gameState.scene;
             clearScene();
-            // Gráficos melhorados estilo Forest Survival
-            scene.background = new THREE.Color(0x0a0805);
+            // Gráficos melhorados estilo Forest Survival - ambiente mais escuro
+            scene.background = new THREE.Color(0x050302);
 
-            addCommonLights(scene, { intensity: 1.2, warm: true });
+            addCommonLights(scene, { intensity: 0.8, warm: true });
 
-            const fog = new THREE.Fog(0x0a0805, 18, 45);
+            const fog = new THREE.Fog(0x050302, 15, 40);
             scene.fog = fog;
 
-            // Iluminação adicional
-            const warmLight = new THREE.DirectionalLight(0xffd9a3, 0.6);
+            // Iluminação mais escura ao redor, focada na cabana
+            const warmLight = new THREE.DirectionalLight(0xffd9a3, 0.4);
             warmLight.position.set(5, 10, 5);
             warmLight.castShadow = true;
             warmLight.shadow.mapSize.set(2048, 2048);
             scene.add(warmLight);
 
-            const ambientWarm = new THREE.HemisphereLight(0xffd9a3, 0x0a0805, 0.5);
+            const ambientWarm = new THREE.HemisphereLight(0xffd9a3, 0x030201, 0.3);
             scene.add(ambientWarm);
+            
+            // Luz adicional focada apenas na cabana para contraste
+            const cabanaSpot = new THREE.SpotLight(0xffd9a3, 1.2, 25, Math.PI / 6, 0.3, 1);
+            cabanaSpot.position.set(0, 8, -6);
+            cabanaSpot.target.position.set(0, 0, -6);
+            cabanaSpot.castShadow = true;
+            scene.add(cabanaSpot);
+            scene.add(cabanaSpot.target);
 
             // Chão maior e mais realista, similar à floresta
             const ground = createGround(80, 80, 0x0b3314);
@@ -3160,10 +3168,12 @@
             criarCenaCabana();
             const scene = gameState.scene;
             const bode = criarModeloBode();
-            bode.scale.set(1.3, 1.3, 1.3);
-            bode.position.set(0, 0, -4.5);
+            // Reduzir escala para caber na porta maior (1.8x2.8)
+            bode.scale.set(1.0, 1.0, 1.0);
+            // Posição ajustada para a cabana maior (porta está em z=4.1 relativo à cabana, cabana em z=-6)
+            bode.position.set(0, 0, -1.9); // Posição inicial mais próxima da porta
             const bodeLight = new THREE.PointLight(0xffd15a, 1.6, 8, 2.2);
-            bodeLight.position.set(0, 2.2, -3.6);
+            bodeLight.position.set(0, 2.2, -1.9);
             scene.add(bode);
             scene.add(bodeLight);
             const doorPivot = scene.userData?.doorPivot;
@@ -3171,7 +3181,8 @@
                 doorPivot.rotation.y = 0;
                 await animateDoor(doorPivot, 0, -Math.PI / 1.6, 1.8);
             }
-            await animateModelMove(bode, bode.position.clone(), new THREE.Vector3(0, 0, -3.2), 2.4);
+            // Mover para posição na porta (porta está em z=-1.9 relativo à cena)
+            await animateModelMove(bode, bode.position.clone(), new THREE.Vector3(0, 0, -1.9), 2.4);
 
             const { base, look } = getSceneCameraBase();
             mostrarDialogo('Você se aproxima da porta; batidas ecoam e o Senhor Bode atende.\n"Oi, você está perdido?"\n\nEle permite que você fique, mas com 3 regras:\n1 - Não saia do seu quarto à noite\n2 - Não desrespeite o Senhor Bode\n3 - Não fale com o Senhor Lobo');
