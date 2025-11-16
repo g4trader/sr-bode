@@ -1758,6 +1758,163 @@
             return group;
         }
 
+        function criarModeloGansoFeminino() {
+            const group = criarModeloGanso();
+            // Adicionar detalhes femininos (pode ser um laço ou cor diferente)
+            const bow = new THREE.Mesh(
+                new THREE.TorusGeometry(0.12, 0.04, 8, 16),
+                new THREE.MeshStandardMaterial({ color: 0xff69b4, roughness: 0.5 })
+            );
+            bow.position.set(0, 1.4, 0.3);
+            bow.rotation.x = Math.PI / 2;
+            group.add(bow);
+            return group;
+        }
+
+        function criarModeloLeao() {
+            const group = new THREE.Group();
+            const furMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0xd4a574, 
+                roughness: 0.85,
+                metalness: 0.02
+            });
+            const maneMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0x8b6914, 
+                roughness: 0.88,
+                metalness: 0.01
+            });
+            const eyeMaterial = new THREE.MeshStandardMaterial({
+                color: 0xffff00,
+                emissive: 0xffff00,
+                emissiveIntensity: 0.5,
+                roughness: 0.3
+            });
+
+            // Corpo
+            const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.6, 1.4, 16), furMaterial);
+            torso.position.y = 1.0;
+            group.add(torso);
+
+            // Peito
+            const chest = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.6, 0.9, 16), furMaterial);
+            chest.position.set(0, 1.3, 0.15);
+            group.add(chest);
+
+            // Cabeça
+            const head = new THREE.Mesh(new THREE.SphereGeometry(0.4, 18, 16), furMaterial);
+            head.position.set(0, 2.0, 0.2);
+            group.add(head);
+
+            // Juba
+            const mane = new THREE.Mesh(new THREE.TorusGeometry(0.5, 0.15, 12, 20), maneMaterial);
+            mane.position.set(0, 2.0, 0);
+            mane.rotation.x = Math.PI / 2;
+            group.add(mane);
+
+            // Focinho
+            const snout = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.2, 0.3), furMaterial);
+            snout.position.set(0, 1.9, 0.5);
+            group.add(snout);
+
+            // Olhos
+            for (const side of [-1, 1]) {
+                const eye = new THREE.Mesh(new THREE.SphereGeometry(0.08, 12, 12), eyeMaterial);
+                eye.position.set(0.12 * side, 2.05, 0.35);
+                group.add(eye);
+            }
+
+            // Orelhas
+            for (const side of [-1, 1]) {
+                const ear = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.25, 8), furMaterial);
+                ear.position.set(0.25 * side, 2.15, 0.1);
+                ear.rotation.z = -side * Math.PI / 4;
+                group.add(ear);
+            }
+
+            // Cauda
+            const tail = new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.8, 10), furMaterial);
+            tail.position.set(0, 0.8, -0.6);
+            tail.rotation.x = -Math.PI / 3;
+            group.add(tail);
+
+            // Pernas
+            for (const side of [-1, 1]) {
+                const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.18, 0.9, 14), furMaterial);
+                leg.position.set(0.3 * side, 0.45, 0.2);
+                group.add(leg);
+                
+                const paw = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.12, 0.25), furMaterial);
+                paw.position.set(0.3 * side, 0.05, 0.25);
+                group.add(paw);
+            }
+
+            group.traverse((obj) => {
+                if (obj.isMesh) {
+                    obj.castShadow = true;
+                    obj.receiveShadow = true;
+                }
+            });
+
+            return group;
+        }
+
+        function criarModeloCobra() {
+            const group = new THREE.Group();
+            const scaleMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0x4a7c59, 
+                roughness: 0.7,
+                metalness: 0.1
+            });
+            const eyeMaterial = new THREE.MeshStandardMaterial({
+                color: 0xff0000,
+                emissive: 0xff3333,
+                emissiveIntensity: 0.6,
+                roughness: 0.3
+            });
+
+            // Corpo longo (serpente)
+            const bodySegments = 8;
+            for (let i = 0; i < bodySegments; i++) {
+                const segment = new THREE.Mesh(
+                    new THREE.CylinderGeometry(0.2 - i * 0.02, 0.22 - i * 0.02, 0.4, 12),
+                    scaleMaterial
+                );
+                segment.position.set(0, 0.3, -i * 0.35);
+                segment.rotation.z = Math.sin(i * 0.3) * 0.2;
+                group.add(segment);
+            }
+
+            // Cabeça
+            const head = new THREE.Mesh(new THREE.SphereGeometry(0.25, 16, 14), scaleMaterial);
+            head.position.set(0, 0.3, 0.4);
+            group.add(head);
+
+            // Olhos
+            for (const side of [-1, 1]) {
+                const eye = new THREE.Mesh(new THREE.SphereGeometry(0.06, 10, 10), eyeMaterial);
+                eye.position.set(0.1 * side, 0.32, 0.5);
+                group.add(eye);
+            }
+
+            // Língua bifurcada
+            const tongue = new THREE.Mesh(
+                new THREE.ConeGeometry(0.03, 0.15, 6),
+                new THREE.MeshStandardMaterial({ color: 0xff0000 })
+            );
+            tongue.position.set(0, 0.28, 0.6);
+            tongue.rotation.x = Math.PI / 2;
+            group.add(tongue);
+
+            group.traverse((obj) => {
+                if (obj.isMesh) {
+                    obj.castShadow = true;
+                    obj.receiveShadow = true;
+                }
+            });
+
+            return group;
+        }
+
         function criarModeloCavalo() {
             const group = new THREE.Group();
             const bodyMaterial = new THREE.MeshStandardMaterial({ color: 0x7b4a25, roughness: 0.7 });
@@ -4175,6 +4332,184 @@
             scene.remove(bode);
             scene.remove(bodeLight);
             gameState.bodeNoMercado = false;
+            
+            // Nova cena: Festa na casa do Senhor Bode
+            await festaNaCasa();
+        }
+
+        async function festaNaCasa() {
+            gameState.cena_atual = 'festa';
+            criarSalaCasaPrincipal();
+            const scene = gameState.scene;
+
+            // Adicionar decoração de festa
+            const festaLights = [];
+            for (let i = -3; i <= 3; i += 2) {
+                const light = new THREE.PointLight(0xffd700, 1.5, 8, 1.5);
+                light.position.set(i * 1.5, 3.5, -2);
+                scene.add(light);
+                festaLights.push(light);
+            }
+
+            // Senhor Bode (anfitrião)
+            const bode = criarModeloBode();
+            bode.scale.set(1.2, 1.2, 1.2);
+            bode.position.set(0, 0, -2);
+            scene.add(bode);
+
+            // Convidados
+            const srGanso = criarModeloGanso();
+            srGanso.scale.set(0.8, 0.8, 0.8);
+            srGanso.position.set(-2.5, 0, -1.5);
+            scene.add(srGanso);
+
+            const sraGanso = criarModeloGansoFeminino();
+            sraGanso.scale.set(0.8, 0.8, 0.8);
+            sraGanso.position.set(-2.5, 0, -2.5);
+            scene.add(sraGanso);
+
+            const srLeao = criarModeloLeao();
+            srLeao.scale.set(0.9, 0.9, 0.9);
+            srLeao.position.set(2.5, 0, -1.5);
+            scene.add(srLeao);
+
+            const sraCobra = criarModeloCobra();
+            sraCobra.scale.set(1.2, 1.2, 1.2);
+            sraCobra.position.set(2.5, 0.3, -2.5);
+            sraCobra.rotation.y = Math.PI / 4;
+            scene.add(sraCobra);
+
+            mostrarDialogo('O Senhor Bode anuncia: "Hoje temos uma festa especial! Todos os convidados chegaram."');
+            await new Promise(resolve => setTimeout(resolve, 2500));
+
+            mostrarDialogo('Você vê os convidados: Sr Ganso, Sra Ganso, Sr Leão e Sra Cobra.');
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
+            mostrarDialogo('O Senhor Bode se vira para você: "Preciso de ajuda para servir os convidados. Você pode ajudar?"');
+            mostrarEscolhas(['1 - Aceitar ajudar', '2 - Recusar']);
+            atualizarInventario();
+
+            const escolha = await aguardarEscolha();
+            esconderEscolhas();
+
+            if (escolha === 1) {
+                mostrarDialogo('Você aceita ajudar a servir na festa.');
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                await servirNaFesta(scene, bode, srGanso, sraGanso, srLeao, sraCobra);
+            } else {
+                mostrarDialogo('Você recusa, mas o Senhor Bode insiste: "É importante para mim."');
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                await servirNaFesta(scene, bode, srGanso, sraGanso, srLeao, sraCobra);
+            }
+
+            // Limpar cena
+            festaLights.forEach(light => scene.remove(light));
+            scene.remove(bode);
+            scene.remove(srGanso);
+            scene.remove(sraGanso);
+            scene.remove(srLeao);
+            scene.remove(sraCobra);
+        }
+
+        async function servirNaFesta(scene, bode, srGanso, sraGanso, srLeao, sraCobra) {
+            mostrarDialogo('Você começa a servir comida e bebida para os convidados...');
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
+            mostrarDialogo('Você serve o Sr Ganso e a Sra Ganso. Eles agradecem educadamente.');
+            await animateModelMove(srGanso, srGanso.position.clone(), new THREE.Vector3(-2.5, 0, -1.2), 1.0);
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            mostrarDialogo('Você serve a Sra Cobra. Ela sibila agradecendo.');
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            mostrarDialogo('Você se aproxima do Sr Leão para servi-lo...');
+            await animateModelMove(srLeao, srLeao.position.clone(), new THREE.Vector3(2.2, 0, -1.2), 1.0);
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            mostrarDialogo('O Sr Leão olha para você com interesse: "Obrigado. Você poderia me ajudar com algo no sótão?"');
+            mostrarEscolhas(['1 - Aceitar ir ao sótão', '2 - Recusar']);
+            atualizarInventario();
+
+            const escolha = await aguardarEscolha();
+            esconderEscolhas();
+
+            if (escolha === 1) {
+                mostrarDialogo('Você aceita ajudar o Sr Leão no sótão.');
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                await assedioNoSotao(scene, srLeao);
+            } else {
+                mostrarDialogo('Você recusa, mas o Sr Leão insiste: "É muito importante. Por favor."');
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                mostrarDialogo('Você relutantemente aceita.');
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                await assedioNoSotao(scene, srLeao);
+            }
+        }
+
+        async function assedioNoSotao(scene, srLeao) {
+            gameState.cena_atual = 'assedio_sotao';
+            criarSalaCasaPrincipal();
+            
+            // Recriar sótão
+            await sotao();
+            
+            const sceneSotao = gameState.scene;
+            
+            // Adicionar Sr Leão no sótão
+            const leaoSotao = criarModeloLeao();
+            leaoSotao.scale.set(1.1, 1.1, 1.1);
+            leaoSotao.position.set(-1.5, 0, 1.5);
+            sceneSotao.add(leaoSotao);
+
+            mostrarDialogo('Você sobe ao sótão com o Sr Leão...');
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
+            mostrarDialogo('O Sr Leão fecha a porta do sótão atrás de você.');
+            audioManager.playEffect('perigo');
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            mostrarDialogo('Sr Leão: "Você é muito bonito... Não há ninguém aqui para nos ouvir."');
+            await animateModelMove(leaoSotao, leaoSotao.position.clone(), new THREE.Vector3(-0.5, 0, 0.5), 1.5);
+            audioManager.playEffect('perigo');
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
+            mostrarDialogo('O Sr Leão se aproxima de você de forma ameaçadora...');
+            await animateModelMove(leaoSotao, leaoSotao.position.clone(), new THREE.Vector3(0, 0, 0), 1.2);
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            mostrarDialogo('Você se sente ameaçado e assediado!');
+            mostrarEscolhas(['GRITAR POR AJUDA']);
+            atualizarInventario();
+
+            const escolha = await aguardarEscolha();
+            esconderEscolhas();
+
+            if (escolha === 0) {
+                mostrarDialogo('Você GRITA por ajuda: "SOCORRO! ALGUÉM ME AJUDE!"');
+                audioManager.playEffect('perigo');
+                await new Promise(resolve => setTimeout(resolve, 2000));
+
+                mostrarDialogo('Passos correm escada acima! A porta do sótão se abre...');
+                await new Promise(resolve => setTimeout(resolve, 2000));
+
+                mostrarDialogo('O Senhor Bode aparece na porta: "O que está acontecendo aqui?!"');
+                await new Promise(resolve => setTimeout(resolve, 2000));
+
+                mostrarDialogo('Sr Leão: "N-nada... Estávamos apenas conversando..."');
+                await new Promise(resolve => setTimeout(resolve, 2000));
+
+                mostrarDialogo('Senhor Bode: "Saia da minha casa AGORA, Sr Leão! Você não é mais bem-vindo!"');
+                audioManager.playEffect('perigo');
+                await new Promise(resolve => setTimeout(resolve, 2500));
+
+                mostrarDialogo('O Sr Leão sai rapidamente, envergonhado. O Senhor Bode se volta para você:');
+                await new Promise(resolve => setTimeout(resolve, 2000));
+
+                mostrarDialogo('"Desculpe por isso. Você está seguro agora. A festa acabou."');
+                await new Promise(resolve => setTimeout(resolve, 2000));
+
+                sceneSotao.remove(leaoSotao);
+            }
         }
 
         async function chamada_lobo() {
