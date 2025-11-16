@@ -3954,7 +3954,8 @@
                                 mostrarDialogo('Você se alimenta com pressa e ganha fôlego para correr ainda mais.');
                                 audioManager.playEffect('coleta');
                                 setPlayerState('run');
-                                gameState.fome = Math.min(100, gameState.fome + 35);
+                                // Restaura 80% da fome (80 pontos de 100)
+                                gameState.fome = Math.min(100, gameState.fome + 80);
                                 gameState.lastCansacoSound = obterTempo();
                             } else if (item === 'Sabão Macaco') {
                                 mostrarDialogo('Você lança o Sabão Macaco! O Senhor Bode escorrega longe na lama sinistra, sumindo na névoa por alguns instantes!');
