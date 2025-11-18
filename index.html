@@ -2487,56 +2487,74 @@
 
         function criarModeloLeao() {
             const group = new THREE.Group();
-            // Materiais mais realistas e vibrantes
+            // Materiais mais vibrantes, majestosos e realistas
             const furMaterial = new THREE.MeshStandardMaterial({ 
-                color: 0xf8d5a8, 
-                roughness: 0.88,
-                metalness: 0.01
+                color: 0xffd5a8, 
+                roughness: 0.85,
+                metalness: 0.02
             });
             const darkFurMaterial = new THREE.MeshStandardMaterial({ 
-                color: 0xe5b87d, 
-                roughness: 0.9,
-                metalness: 0.01
+                color: 0xe8b87d, 
+                roughness: 0.87,
+                metalness: 0.02
             });
             const maneMaterial = new THREE.MeshStandardMaterial({ 
-                color: 0xd4a85f, 
-                roughness: 0.92,
-                metalness: 0.0
+                color: 0x8b6a3a, 
+                roughness: 0.88,
+                metalness: 0.0,
+                emissive: 0x6a4a2a,
+                emissiveIntensity: 0.12
             });
             const eyeMaterial = new THREE.MeshStandardMaterial({
                 color: 0xffe600,
                 emissive: 0xffd700,
-                emissiveIntensity: 1.3,
-                roughness: 0.15,
-                metalness: 0.25
+                emissiveIntensity: 1.5,
+                roughness: 0.1,
+                metalness: 0.3
             });
             const armMaterial = new THREE.MeshStandardMaterial({ 
-                color: 0xedcc96, 
-                roughness: 0.88,
-                metalness: 0.01
+                color: 0xf0cc96, 
+                roughness: 0.85,
+                metalness: 0.02
             });
             const pawMaterial = new THREE.MeshStandardMaterial({ 
-                color: 0x8a6a4a, 
-                roughness: 0.75,
-                metalness: 0.06
+                color: 0x9a7a5a, 
+                roughness: 0.7,
+                metalness: 0.08
             });
             const noseMaterial = new THREE.MeshStandardMaterial({ 
-                color: 0x4a2515, 
-                roughness: 0.6,
-                metalness: 0.1
+                color: 0x5a3525, 
+                roughness: 0.5,
+                metalness: 0.15
             });
 
-            // Corpo humanoide/bípede de leão - proporções mais realistas e majestosas
-            const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.72, 1.9, 28), furMaterial);
-            torso.position.y = 1.45;
-            torso.scale.z = 0.88;
+            // Corpo humanoide/bípede de leão - proporções mais majestosas e imponentes
+            const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.58, 0.75, 2.0, 32), furMaterial);
+            torso.position.y = 1.48;
+            torso.scale.z = 0.9;
             group.add(torso);
 
-            // Peito musculoso e imponente
-            const chest = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.68, 1.2, 28), darkFurMaterial);
-            chest.position.set(0, 1.75, 0.25);
-            chest.scale.z = 0.92;
+            // Peito musculoso e muito mais imponente
+            const chest = new THREE.Mesh(new THREE.CylinderGeometry(0.62, 0.7, 1.25, 30), darkFurMaterial);
+            chest.position.set(0, 1.78, 0.28);
+            chest.scale.z = 0.95;
             group.add(chest);
+            
+            // Detalhes de pelagem no peito (simulação de pelo)
+            for (let i = 0; i < 8; i++) {
+                const chestFur = new THREE.Mesh(
+                    new THREE.ConeGeometry(0.03 + Math.random() * 0.02, 0.12 + Math.random() * 0.08, 8),
+                    Math.random() > 0.5 ? darkFurMaterial : furMaterial
+                );
+                chestFur.position.set(
+                    (Math.random() - 0.5) * 0.5,
+                    1.6 + Math.random() * 0.3,
+                    0.35 + Math.random() * 0.15
+                );
+                chestFur.rotation.z = (Math.random() - 0.5) * 0.4;
+                chestFur.rotation.x = Math.random() * 0.3;
+                group.add(chestFur);
+            }
             
             // Músculos do peito muito mais definidos
             for (const side of [-1, 1]) {
@@ -2560,24 +2578,55 @@
                 group.add(ab);
             }
 
-            // Cintura/pelve mais definida e elegante
-            const pelvis = new THREE.Mesh(new THREE.CylinderGeometry(0.48, 0.55, 0.52, 26), furMaterial);
-            pelvis.position.y = 0.84;
-            pelvis.scale.z = 0.9;
+            // Cintura/pelve mais definida, elegante e musculosa
+            const pelvis = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.58, 0.55, 28), furMaterial);
+            pelvis.position.y = 0.86;
+            pelvis.scale.z = 0.92;
             group.add(pelvis);
+            
+            // Detalhes de pelagem no corpo
+            for (let i = 0; i < 12; i++) {
+                const bodyFur = new THREE.Mesh(
+                    new THREE.ConeGeometry(0.025 + Math.random() * 0.02, 0.1 + Math.random() * 0.06, 8),
+                    Math.random() > 0.5 ? darkFurMaterial : furMaterial
+                );
+                bodyFur.position.set(
+                    (Math.random() - 0.5) * 0.6,
+                    0.9 + Math.random() * 0.8,
+                    0.28 + Math.random() * 0.12
+                );
+                bodyFur.rotation.z = (Math.random() - 0.5) * 0.5;
+                bodyFur.rotation.y = (Math.random() - 0.5) * 0.3;
+                group.add(bodyFur);
+            }
 
-            // Cabeça de leão muito mais realista e majestosa
-            const head = new THREE.Mesh(new THREE.SphereGeometry(0.52, 28, 26), furMaterial);
-            head.scale.set(1.15, 0.98, 1.25);
-            head.position.set(0, 2.58, 0.35);
+            // Cabeça de leão muito mais realista e majestosa - mais volumosa
+            const head = new THREE.Mesh(new THREE.SphereGeometry(0.55, 32, 30), furMaterial);
+            head.scale.set(1.2, 1.0, 1.3);
+            head.position.set(0, 2.6, 0.38);
             head.rotation.x = -0.08;
             group.add(head);
             
-            // Testa mais larga e majestosa
-            const forehead = new THREE.Mesh(new THREE.SphereGeometry(0.22, 18, 16), furMaterial);
-            forehead.position.set(0, 2.72, 0.22);
-            forehead.scale.set(1.8, 0.8, 1.0);
+            // Testa mais larga, majestosa e imponente
+            const forehead = new THREE.Mesh(new THREE.SphereGeometry(0.24, 20, 18), furMaterial);
+            forehead.position.set(0, 2.75, 0.25);
+            forehead.scale.set(1.9, 0.85, 1.05);
             group.add(forehead);
+            
+            // Detalhes de pelo na testa
+            for (let i = 0; i < 6; i++) {
+                const foreheadFur = new THREE.Mesh(
+                    new THREE.ConeGeometry(0.025 + Math.random() * 0.015, 0.08 + Math.random() * 0.05, 8),
+                    Math.random() > 0.6 ? darkFurMaterial : furMaterial
+                );
+                foreheadFur.position.set(
+                    (Math.random() - 0.5) * 0.35,
+                    2.82 + Math.random() * 0.05,
+                    0.18 + Math.random() * 0.08
+                );
+                foreheadFur.rotation.z = (Math.random() - 0.5) * 0.3;
+                group.add(foreheadFur);
+            }
             
             // Bochechas muito mais definidas e volumosas
             for (const side of [-1, 1]) {
@@ -2599,54 +2648,88 @@
             jaw.scale.z = 0.9;
             group.add(jaw);
 
-            // Juba totalmente lisa - sem ondulações nem textura
-            // Usando apenas esferas e cilindros grandes e suaves
+            // Juba totalmente lisa e majestosa - muito mais volumosa e imponente
+            // Usando apenas esferas e cilindros grandes e suaves com mais camadas
             
-            // Camada principal da juba - forma esférica lisa ao redor da cabeça
+            // Camada principal da juba - forma esférica lisa ao redor da cabeça (mais volumosa)
             const maneMain = new THREE.Mesh(
-                new THREE.SphereGeometry(0.85, 64, 64),
+                new THREE.SphereGeometry(0.92, 64, 64),
                 maneMaterial
             );
-            maneMain.position.set(0, 2.3, 0);
-            maneMain.scale.set(1, 1.1, 1);
+            maneMain.position.set(0, 2.32, 0);
+            maneMain.scale.set(1.05, 1.15, 1.05);
             group.add(maneMain);
             
-            // Camada externa lisa adicional
+            // Camada externa lisa adicional (mais volumosa)
             const maneOuter = new THREE.Mesh(
-                new THREE.SphereGeometry(0.9, 64, 64),
-                darkFurMaterial
+                new THREE.SphereGeometry(0.98, 64, 64),
+                new THREE.MeshStandardMaterial({ 
+                    color: 0x7a5a3a,
+                    roughness: 0.85,
+                    metalness: 0.0,
+                    transparent: true,
+                    opacity: 0.65
+                })
             );
-            maneOuter.position.set(0, 2.25, 0);
-            maneOuter.scale.set(1.05, 1.05, 1);
-            maneOuter.transparent = true;
-            maneOuter.opacity = 0.6;
+            maneOuter.position.set(0, 2.27, 0);
+            maneOuter.scale.set(1.08, 1.1, 1.08);
             group.add(maneOuter);
             
-            // Juba frontal completamente lisa - cilindro grande
-            const frontManeMain = new THREE.Mesh(
-                new THREE.CylinderGeometry(0.7, 0.75, 0.6, 64),
-                maneMaterial
-            );
-            frontManeMain.position.set(0, 2.7, 0.2);
-            group.add(frontManeMain);
-            
-            // Parte superior frontal lisa
-            const frontManeTop = new THREE.Mesh(
-                new THREE.CylinderGeometry(0.72, 0.78, 0.4, 64),
+            // Camada interna (mais escura) para profundidade
+            const maneInner = new THREE.Mesh(
+                new THREE.SphereGeometry(0.86, 64, 64),
                 darkFurMaterial
             );
-            frontManeTop.position.set(0, 2.78, 0.15);
+            maneInner.position.set(0, 2.34, -0.05);
+            maneInner.scale.set(1, 1.1, 0.95);
+            group.add(maneInner);
+            
+            // Juba frontal completamente lisa - cilindro grande e mais volumoso
+            const frontManeMain = new THREE.Mesh(
+                new THREE.CylinderGeometry(0.75, 0.82, 0.68, 64),
+                maneMaterial
+            );
+            frontManeMain.position.set(0, 2.72, 0.22);
+            group.add(frontManeMain);
+            
+            // Parte superior frontal lisa (mais volumosa)
+            const frontManeTop = new THREE.Mesh(
+                new THREE.CylinderGeometry(0.78, 0.85, 0.48, 64),
+                new THREE.MeshStandardMaterial({ 
+                    color: 0x7a5a3a,
+                    roughness: 0.88,
+                    metalness: 0.0,
+                    transparent: true,
+                    opacity: 0.7
+                })
+            );
+            frontManeTop.position.set(0, 2.82, 0.18);
             group.add(frontManeTop);
             
-            // Juba lateral completamente lisa - sem rotações complexas
+            // Juba lateral completamente lisa - mais volumosa
             for (const side of [-1, 1]) {
                 const sideMane = new THREE.Mesh(
-                    new THREE.CylinderGeometry(0.55, 0.6, 0.65, 64),
+                    new THREE.CylinderGeometry(0.6, 0.65, 0.72, 64),
                     maneMaterial
                 );
-                sideMane.position.set(0.65 * side, 2.45, 0.12);
+                sideMane.position.set(0.7 * side, 2.48, 0.15);
                 sideMane.rotation.y = side * Math.PI / 5;
                 group.add(sideMane);
+                
+                // Camada extra lateral para mais volume
+                const sideManeExtra = new THREE.Mesh(
+                    new THREE.CylinderGeometry(0.62, 0.67, 0.65, 64),
+                    new THREE.MeshStandardMaterial({ 
+                        color: 0x7a5a3a,
+                        roughness: 0.88,
+                        metalness: 0.0,
+                        transparent: true,
+                        opacity: 0.6
+                    })
+                );
+                sideManeExtra.position.set(0.72 * side, 2.46, 0.12);
+                sideManeExtra.rotation.y = side * Math.PI / 5.5;
+                group.add(sideManeExtra);
             }
 
             // Focinho de leão muito mais realista e elegante
@@ -2691,38 +2774,50 @@
             lowerLip.position.set(0, 2.22, 0.78);
             group.add(lowerLip);
 
-            // Olhos muito mais expressivos e realistas
+            // Olhos muito mais expressivos, intensos e majestosos
             for (const side of [-1, 1]) {
-                // Olho principal maior e mais expressivo
-                const eye = new THREE.Mesh(new THREE.SphereGeometry(0.16, 22, 20), eyeMaterial);
-                eye.position.set(0.24 * side, 2.58, 0.52);
-                eye.scale.set(1.1, 1, 1.05);
+                // Olho principal maior e muito mais expressivo
+                const eye = new THREE.Mesh(new THREE.SphereGeometry(0.18, 24, 22), eyeMaterial);
+                eye.position.set(0.24 * side, 2.6, 0.54);
+                eye.scale.set(1.15, 1, 1.1);
                 group.add(eye);
                 
-                // Íris dourada
-                const iris = new THREE.Mesh(new THREE.SphereGeometry(0.12, 18, 16),
+                // Íris dourada mais vibrante e brilhante
+                const iris = new THREE.Mesh(new THREE.SphereGeometry(0.13, 20, 18),
                     new THREE.MeshStandardMaterial({ 
-                        color: 0xffcc00, 
-                        roughness: 0.3,
-                        metalness: 0.4
+                        color: 0xffd500, 
+                        roughness: 0.25,
+                        metalness: 0.5,
+                        emissive: 0xffaa00,
+                        emissiveIntensity: 0.3
                     }));
-                iris.position.set(0.24 * side, 2.58, 0.55);
+                iris.position.set(0.24 * side, 2.6, 0.57);
                 group.add(iris);
                 
-                // Brilho no olho mais intenso
-                const eyeGlow = new THREE.Mesh(new THREE.SphereGeometry(0.07, 14, 12),
+                // Brilho no olho mais intenso e realista (reflexo)
+                const eyeGlow = new THREE.Mesh(new THREE.SphereGeometry(0.08, 16, 14),
                     new THREE.MeshStandardMaterial({ 
                         color: 0xffffff, 
                         emissive: 0xffffff,
-                        emissiveIntensity: 1.2
+                        emissiveIntensity: 1.5
                     }));
-                eyeGlow.position.set(0.25 * side, 2.6, 0.54);
+                eyeGlow.position.set(0.26 * side, 2.62, 0.56);
                 group.add(eyeGlow);
                 
+                // Segundo reflexo menor
+                const eyeGlow2 = new THREE.Mesh(new THREE.SphereGeometry(0.04, 12, 10),
+                    new THREE.MeshStandardMaterial({ 
+                        color: 0xffffff, 
+                        emissive: 0xffffff,
+                        emissiveIntensity: 1.0
+                    }));
+                eyeGlow2.position.set(0.27 * side, 2.61, 0.55);
+                group.add(eyeGlow2);
+                
                 // Pupila maior e mais definida
-                const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.09, 18, 16),
-                    new THREE.MeshStandardMaterial({ color: 0x000000, roughness: 0.1 }));
-                pupil.position.set(0.25 * side, 2.59, 0.56);
+                const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.1, 20, 18),
+                    new THREE.MeshStandardMaterial({ color: 0x000000, roughness: 0.05 }));
+                pupil.position.set(0.25 * side, 2.61, 0.58);
                 group.add(pupil);
                 
                 // Sobrancelha/área acima do olho mais definida
@@ -2764,24 +2859,71 @@
                 group.add(earInner);
             }
 
-            // Cauda de leão com tufo
-            const tail = new THREE.Mesh(new THREE.ConeGeometry(0.14, 1.0, 14), furMaterial);
-            tail.position.set(0, 0.95, -0.55);
-            tail.rotation.x = -Math.PI / 2.7;
+            // Cauda de leão com tufo mais volumoso e majestoso
+            const tail = new THREE.Mesh(new THREE.ConeGeometry(0.16, 1.1, 16), furMaterial);
+            tail.position.set(0, 0.98, -0.58);
+            tail.rotation.x = -Math.PI / 2.6;
+            tail.rotation.z = 0.08;
             group.add(tail);
             
-            // Tufo na ponta da cauda
-            const tailTuft = new THREE.Mesh(new THREE.SphereGeometry(0.12, 12, 12), maneMaterial);
-            tailTuft.position.set(0, 0.4, -0.9);
+            // Detalhes de pelo na cauda
+            for (let i = 0; i < 8; i++) {
+                const tailFur = new THREE.Mesh(
+                    new THREE.ConeGeometry(0.02 + Math.random() * 0.015, 0.06 + Math.random() * 0.04, 8),
+                    Math.random() > 0.5 ? darkFurMaterial : furMaterial
+                );
+                const t = i / 8;
+                tailFur.position.set(
+                    (Math.random() - 0.5) * 0.1,
+                    0.95 - t * 0.6,
+                    -0.55 - t * 0.35
+                );
+                tailFur.rotation.z = (Math.random() - 0.5) * 0.4;
+                group.add(tailFur);
+            }
+            
+            // Tufo na ponta da cauda (muito mais volumoso e majestoso)
+            const tailTuft = new THREE.Mesh(new THREE.SphereGeometry(0.15, 14, 14), maneMaterial);
+            tailTuft.position.set(0, 0.35, -0.95);
+            tailTuft.scale.set(1.1, 1.2, 1.0);
             group.add(tailTuft);
+            
+            // Camada extra do tufo
+            const tailTuftExtra = new THREE.Mesh(new THREE.SphereGeometry(0.17, 14, 14), 
+                new THREE.MeshStandardMaterial({ 
+                    color: 0x7a5a3a,
+                    roughness: 0.88,
+                    metalness: 0.0,
+                    transparent: true,
+                    opacity: 0.7
+                })
+            );
+            tailTuftExtra.position.set(0, 0.32, -0.97);
+            tailTuftExtra.scale.set(1.15, 1.1, 1.05);
+            group.add(tailTuftExtra);
 
-            // Braços humanos de leão - muito mais visíveis e fortes
+            // Braços humanos de leão - muito mais visíveis, fortes e majestosos
             for (const side of [-1, 1]) {
-                // Ombro mais volumoso e visível
-                const shoulder = new THREE.Mesh(new THREE.SphereGeometry(0.24, 18, 16), furMaterial);
-                shoulder.position.set(0.58 * side, 2.0, 0);
-                shoulder.scale.set(1, 1.2, 0.98);
+                // Ombro mais volumoso, visível e imponente
+                const shoulder = new THREE.Mesh(new THREE.SphereGeometry(0.26, 20, 18), furMaterial);
+                shoulder.position.set(0.6 * side, 2.02, 0);
+                shoulder.scale.set(1.05, 1.25, 1.0);
                 group.add(shoulder);
+                
+                // Detalhes de pelo no ombro
+                for (let i = 0; i < 5; i++) {
+                    const shoulderFur = new THREE.Mesh(
+                        new THREE.ConeGeometry(0.02 + Math.random() * 0.015, 0.08 + Math.random() * 0.05, 8),
+                        Math.random() > 0.5 ? darkFurMaterial : furMaterial
+                    );
+                    shoulderFur.position.set(
+                        0.58 * side + (Math.random() - 0.5) * 0.15,
+                        1.95 + Math.random() * 0.2,
+                        0.05 + Math.random() * 0.08
+                    );
+                    shoulderFur.rotation.z = (Math.random() - 0.5) * 0.4;
+                    group.add(shoulderFur);
+                }
                 
                 // Detalhe do ombro - parte superior
                 const shoulderTop = new THREE.Mesh(new THREE.SphereGeometry(0.18, 14, 12), darkFurMaterial);
@@ -2876,13 +3018,28 @@
                 group.add(thumbClaw);
             }
 
-            // Pernas bípedes muito mais fortes e musculadas
+            // Pernas bípedes muito mais fortes, musculadas e imponentes
             for (const side of [-1, 1]) {
-                // Quadril mais robusto
-                const hip = new THREE.Mesh(new THREE.SphereGeometry(0.21, 16, 14), furMaterial);
-                hip.position.set(0.32 * side, 0.78, 0);
-                hip.scale.set(1, 1.15, 0.9);
+                // Quadril mais robusto e musculoso
+                const hip = new THREE.Mesh(new THREE.SphereGeometry(0.23, 18, 16), furMaterial);
+                hip.position.set(0.34 * side, 0.8, 0);
+                hip.scale.set(1.05, 1.2, 0.92);
                 group.add(hip);
+                
+                // Detalhes de pelo no quadril
+                for (let i = 0; i < 4; i++) {
+                    const hipFur = new THREE.Mesh(
+                        new THREE.ConeGeometry(0.02 + Math.random() * 0.015, 0.07 + Math.random() * 0.04, 8),
+                        Math.random() > 0.5 ? darkFurMaterial : furMaterial
+                    );
+                    hipFur.position.set(
+                        0.32 * side + (Math.random() - 0.5) * 0.12,
+                        0.75 + Math.random() * 0.15,
+                        0.02 + Math.random() * 0.06
+                    );
+                    hipFur.rotation.z = (Math.random() - 0.5) * 0.3;
+                    group.add(hipFur);
+                }
 
                 // Coxa muito musculada
                 const thigh = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.26, 1.05, 24), armMaterial);
@@ -3067,15 +3224,17 @@
                 metalness: 0.08
             });
 
-            // Corpo humanoide/bípede de cavalo - proporções mais realistas
-            const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.72, 1.9, 28), bodyMaterial);
-            torso.position.y = 1.48;
-            torso.scale.z = 0.88;
+            // Corpo de cavalo quadrúpede - proporções realistas de equino
+            const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.72, 2.2, 28), bodyMaterial);
+            torso.position.y = 0.75;
+            torso.rotation.x = Math.PI / 2;
+            torso.scale.z = 0.9;
             group.add(torso);
 
-            // Peito muito musculoso e imponente
-            const chest = new THREE.Mesh(new THREE.CylinderGeometry(0.62, 0.68, 1.2, 28), darkBodyMaterial);
-            chest.position.set(0, 1.78, 0.22);
+            // Peito muito musculoso e imponente (cavalo quadrúpede)
+            const chest = new THREE.Mesh(new THREE.CylinderGeometry(0.62, 0.68, 1.3, 28), darkBodyMaterial);
+            chest.position.set(0.5, 0.75, 0.22);
+            chest.rotation.x = Math.PI / 2;
             chest.scale.z = 0.9;
             group.add(chest);
             
@@ -3083,39 +3242,41 @@
             for (const side of [-1, 1]) {
                 const pec = new THREE.Mesh(new THREE.SphereGeometry(0.13, 16, 14), darkBodyMaterial);
                 pec.scale.set(1.05, 0.7, 1.25);
-                pec.position.set(0.27 * side, 1.76, 0.35);
+                pec.position.set(0.27 * side + 0.5, 0.75, 0.35);
                 group.add(pec);
             }
 
-            // Cintura/pelve mais definida
-            const pelvis = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.55, 0.52, 24), bodyMaterial);
-            pelvis.position.y = 0.88;
-            pelvis.scale.z = 0.9;
-            group.add(pelvis);
+            // Garupa (parte traseira do cavalo)
+            const rump = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.55, 0.9, 24), bodyMaterial);
+            rump.position.set(-0.5, 0.75, 0);
+            rump.rotation.x = Math.PI / 2;
+            rump.scale.z = 0.9;
+            group.add(rump);
 
-            // Pescoço de cavalo mais longo, elegante e arqueado (característica equina)
+            // Pescoço de cavalo mais longo, elegante e arqueado (característica equina) - posição quadrúpede
             const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.42, 1.35, 28), bodyMaterial);
-            neck.position.set(0.68, 2.12, 0.38);
-            neck.rotation.z = Math.PI / 5;
+            neck.position.set(0.68, 1.35, 0.38);
+            neck.rotation.z = Math.PI / 3.2;
             neck.rotation.y = -0.12;
             group.add(neck);
 
-            // Base do pescoço (garupa) mais definida
+            // Base do pescoço mais definida
             const neckBase = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.55, 0.32, 24), darkBodyMaterial);
-            neckBase.position.set(0.32, 1.78, 0.28);
+            neckBase.position.set(0.42, 1.0, 0.28);
+            neckBase.rotation.x = Math.PI / 2.5;
             group.add(neckBase);
 
-            // Cabeça de cavalo muito mais realista - alongada e característica equina
+            // Cabeça de cavalo muito mais realista - alongada e característica equina (posição quadrúpede)
             const head = new THREE.Mesh(new THREE.SphereGeometry(0.5, 26, 24), bodyMaterial);
             head.scale.set(1.2, 0.92, 1.4);
-            head.position.set(1.42, 2.58, 0.48);
+            head.position.set(1.42, 1.8, 0.48);
             head.rotation.y = -0.08;
             head.rotation.x = -0.05;
             group.add(head);
 
             // Testa de cavalo (área entre os olhos) mais pronunciada
             const forehead = new THREE.Mesh(new THREE.SphereGeometry(0.18, 18, 16), bodyMaterial);
-            forehead.position.set(1.15, 2.68, 0.38);
+            forehead.position.set(1.15, 1.9, 0.38);
             forehead.scale.set(1.9, 1.1, 1.0);
             group.add(forehead);
             
@@ -3123,13 +3284,13 @@
             for (const side of [-1, 1]) {
                 const cheek = new THREE.Mesh(new THREE.SphereGeometry(0.15, 16, 14), darkBodyMaterial);
                 cheek.scale.set(1, 0.8, 1.2);
-                cheek.position.set(1.3 + 0.18 * side, 2.45, 0.45);
+                cheek.position.set(1.3 + 0.18 * side, 1.65, 0.45);
                 group.add(cheek);
             }
 
             // Focinho de cavalo muito mais realista - longo e característico equino
             const muzzle = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.35, 0.85, 24), darkBodyMaterial);
-            muzzle.position.set(1.78, 2.28, 0.68);
+            muzzle.position.set(1.78, 1.5, 0.68);
             muzzle.rotation.x = Math.PI / 2;
             muzzle.rotation.y = -0.04;
             muzzle.scale.z = 0.92;
@@ -3137,47 +3298,47 @@
 
             // Parte superior do focinho (canhão) mais definida
             const muzzleTop = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.22, 0.5, 10), bodyMaterial);
-            muzzleTop.position.set(1.78, 2.42, 0.62);
+            muzzleTop.position.set(1.78, 1.65, 0.62);
             group.add(muzzleTop);
             
             // Área do focinho mais estreita (característica equina)
             const muzzleNarrow = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.16, 0.38, 10), darkBodyMaterial);
-            muzzleNarrow.position.set(1.82, 2.22, 0.72);
+            muzzleNarrow.position.set(1.82, 1.45, 0.72);
             group.add(muzzleNarrow);
 
             // Narinas muito grandes e expressivas (característica equina)
             for (const side of [-1, 1]) {
                 const nostril = new THREE.Mesh(new THREE.SphereGeometry(0.09, 14, 12), 
                     new THREE.MeshStandardMaterial({ color: 0x1a0a0a, roughness: 0.2, metalness: 0.08 }));
-                nostril.position.set(1.75, 2.28, 0.68 + side * 0.12);
+                nostril.position.set(1.75, 1.5, 0.68 + side * 0.12);
                 nostril.scale.set(1.05, 1.3, 1.1);
                 group.add(nostril);
                 
                 // Detalhe interno da narina
                 const nostrilInner = new THREE.Mesh(new THREE.SphereGeometry(0.06, 10, 10),
                     new THREE.MeshStandardMaterial({ color: 0x0a0a0a, roughness: 0.15 }));
-                nostrilInner.position.set(1.76, 2.28, 0.69 + side * 0.12);
+                nostrilInner.position.set(1.76, 1.5, 0.69 + side * 0.12);
                 group.add(nostrilInner);
             }
             
             // Lábio superior muito mais pronunciado (característica equina)
             const upperLip = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.12, 0.18, 8), noseMaterial);
-            upperLip.position.set(1.85, 2.18, 0.78);
+            upperLip.position.set(1.85, 1.4, 0.78);
             upperLip.rotation.x = -0.05;
             group.add(upperLip);
             
             // Lábio inferior
             const lowerLip = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.1, 0.15, 8),
                 new THREE.MeshStandardMaterial({ color: 0x5a3a2a, roughness: 0.7 }));
-            lowerLip.position.set(1.85, 2.08, 0.75);
+            lowerLip.position.set(1.85, 1.3, 0.75);
             group.add(lowerLip);
 
-            // Crina de cavalo muito mais volumosa e realista - cai ao longo do pescoço
+            // Crina de cavalo muito mais volumosa e realista - cai ao longo do pescoço (posição quadrúpede)
             const maneSegments = 16;
             for (let i = 0; i < maneSegments; i++) {
                 const t = i / maneSegments;
                 const neckPos = 0.32 + t * 1.0;
-                const height = 2.02 + t * 0.65;
+                const height = 1.25 + t * 0.65;
                 
                 // Mais fios de crina por segmento para volume máximo
                 for (let strand = 0; strand < 5; strand++) {
@@ -3207,7 +3368,7 @@
                 );
                 forelock.position.set(
                     1.12 + (Math.random() - 0.5) * 0.25,
-                    2.78 + Math.random() * 0.12,
+                    2.0 + Math.random() * 0.12,
                     0.38 + Math.random() * 0.12
                 );
                 forelock.rotation.set(
@@ -3222,7 +3383,7 @@
             for (const side of [-1, 1]) {
                 // Orelha externa
                 const ear = new THREE.Mesh(new THREE.ConeGeometry(0.14, 0.4, 12), bodyMaterial);
-                ear.position.set(1.1 + 0.2 * side, 2.7, 0.38);
+                ear.position.set(1.1 + 0.2 * side, 1.92, 0.38);
                 ear.rotation.z = -side * Math.PI / 5;
                 ear.rotation.x = -0.25;
                 ear.rotation.y = side * 0.1;
@@ -3231,7 +3392,7 @@
                 // Parte interna da orelha (mais clara)
                 const earInner = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.3, 10),
                     new THREE.MeshStandardMaterial({ color: 0x6a4a2a, roughness: 0.7 }));
-                earInner.position.set(1.12 + 0.2 * side, 2.68, 0.4);
+                earInner.position.set(1.12 + 0.2 * side, 1.9, 0.4);
                 earInner.rotation.z = -side * Math.PI / 5;
                 earInner.rotation.x = -0.25;
                 group.add(earInner);
@@ -3241,7 +3402,7 @@
             for (const side of [-1, 1]) {
                 // Olho principal maior e mais expressivo
                 const eye = new THREE.Mesh(new THREE.SphereGeometry(0.13, 20, 18), eyeMaterial);
-                eye.position.set(1.05 + 0.18 * side, 2.52, 0.52);
+                eye.position.set(1.05 + 0.18 * side, 1.74, 0.52);
                 eye.scale.set(1.15, 1, 1.1);
                 group.add(eye);
                 
@@ -3252,13 +3413,13 @@
                         roughness: 0.35,
                         metalness: 0.2
                     }));
-                iris.position.set(1.05 + 0.18 * side, 2.52, 0.55);
+                iris.position.set(1.05 + 0.18 * side, 1.74, 0.55);
                 group.add(iris);
                 
                 // Pupila
                 const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.07, 16, 14),
                     new THREE.MeshStandardMaterial({ color: 0x000000, roughness: 0.1 }));
-                pupil.position.set(1.06 + 0.18 * side, 2.52, 0.56);
+                pupil.position.set(1.06 + 0.18 * side, 1.74, 0.56);
                 group.add(pupil);
                 
                 // Brilho no olho mais intenso
@@ -3268,121 +3429,117 @@
                         emissive: 0xffffff,
                         emissiveIntensity: 0.8
                     }));
-                eyeGlow.position.set(1.07 + 0.18 * side, 2.54, 0.54);
+                eyeGlow.position.set(1.07 + 0.18 * side, 1.76, 0.54);
                 group.add(eyeGlow);
                 
                 // Pálpebra superior
                 const eyelid = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.03, 0.1, 6),
                     darkBodyMaterial);
-                eyelid.position.set(1.05 + 0.18 * side, 2.56, 0.5);
+                eyelid.position.set(1.05 + 0.18 * side, 1.78, 0.5);
                 group.add(eyelid);
                 
                 // Sobrancelha
                 const eyebrow = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.05, 0.08, 6),
                     darkBodyMaterial);
-                eyebrow.position.set(1.05 + 0.18 * side, 2.62, 0.48);
+                eyebrow.position.set(1.05 + 0.18 * side, 1.84, 0.48);
                 eyebrow.rotation.z = side * 0.1;
                 group.add(eyebrow);
             }
 
-            // Cauda de cavalo mais volumosa
+            // Cauda de cavalo mais volumosa (posição quadrúpede)
             const tail = new THREE.Mesh(new THREE.ConeGeometry(0.18, 1.15, 14), maneMaterial);
-            tail.position.set(0, 1.0, -0.55);
-            tail.rotation.x = -Math.PI / 2.8;
+            tail.position.set(-0.6, 0.75, -0.55);
+            tail.rotation.x = -Math.PI / 2.5;
             tail.rotation.z = 0.1;
             group.add(tail);
 
-            // Braços humanos de cavalo - muito mais musculados
+            // 4 PERNAS DE CAVALO - Posições realistas de equino quadrúpede
+            // Patas dianteiras (mais próximas da cabeça)
             for (const side of [-1, 1]) {
-                // Ombro mais volumoso
-                const shoulder = new THREE.Mesh(new THREE.SphereGeometry(0.24, 16, 14), bodyMaterial);
-                shoulder.position.set(0.6 * side, 2.02, 0);
-                shoulder.scale.set(1, 1.1, 0.95);
-                group.add(shoulder);
+                // Omoplata (scapula)
+                const scapula = new THREE.Mesh(new THREE.SphereGeometry(0.22, 16, 14), bodyMaterial);
+                scapula.position.set(0.4 * side, 1.1, -0.15);
+                scapula.scale.set(1, 1.2, 0.9);
+                group.add(scapula);
 
-                // Braço superior muito musculado
-                const upperArm = new THREE.Mesh(new THREE.CylinderGeometry(0.19, 0.24, 1.08, 22), armMaterial);
-                upperArm.position.set(0.64 * side, 1.48, 0);
-                upperArm.rotation.z = side * Math.PI / 9;
-                group.add(upperArm);
-
-                // Bíceps definido
-                const bicep = new THREE.Mesh(new THREE.SphereGeometry(0.14, 14, 12), darkBodyMaterial);
-                bicep.position.set(0.65 * side, 1.35, 0.08);
-                bicep.scale.set(1, 1.3, 0.8);
-                group.add(bicep);
+                // Braço superior (ombro até cotovelo)
+                const upperLeg = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.22, 0.95, 22), armMaterial);
+                upperLeg.position.set(0.42 * side, 0.6, -0.1);
+                upperLeg.rotation.z = side * Math.PI / 18;
+                group.add(upperLeg);
 
                 // Cotovelo
-                const elbow = new THREE.Mesh(new THREE.SphereGeometry(0.15, 14, 12), armMaterial);
-                elbow.position.set(0.7 * side, 0.98, 0.08);
+                const elbow = new THREE.Mesh(new THREE.SphereGeometry(0.16, 14, 12), armMaterial);
+                elbow.position.set(0.45 * side, 0.15, -0.05);
                 group.add(elbow);
 
-                // Antebraço muito musculado
-                const foreArm = new THREE.Mesh(new THREE.CylinderGeometry(0.17, 0.2, 1.18, 22), armMaterial);
-                foreArm.position.set(0.74 * side, 0.32, 0.14);
-                foreArm.rotation.z = side * Math.PI / 18;
-                group.add(foreArm);
+                // Antebraço (canela dianteira)
+                const foreLeg = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.19, 1.0, 22), armMaterial);
+                foreLeg.position.set(0.48 * side, -0.4, 0);
+                foreLeg.rotation.z = side * Math.PI / 24;
+                group.add(foreLeg);
 
-                // Pulso
-                const wrist = new THREE.Mesh(new THREE.SphereGeometry(0.12, 12, 10), armMaterial);
-                wrist.position.set(0.76 * side, -0.28, 0.16);
-                group.add(wrist);
-
-                // Mão/pata de cavalo mais detalhada (formato de casco)
-                const hand = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.26, 0.38, 12), hoofMaterial);
-                hand.position.set(0.8 * side, -0.35, 0.2);
-                hand.rotation.z = side * Math.PI / 30;
-                group.add(hand);
+                // Casco dianteiro
+                const frontHoof = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.18, 0.45, 12), hoofMaterial);
+                frontHoof.position.set(0.5 * side, -0.9, 0.15);
+                frontHoof.rotation.x = Math.PI / 12;
+                group.add(frontHoof);
+                
+                // Detalhe do casco dianteiro - parte frontal
+                const frontHoofFront = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.16, 0.12, 8), hoofMaterial);
+                frontHoofFront.position.set(0.5 * side, -0.88, 0.35);
+                frontHoofFront.rotation.x = Math.PI / 8;
+                group.add(frontHoofFront);
             }
 
-            // Pernas bípedes muito mais fortes e musculadas
+            // Patas traseiras (mais próximas da cauda)
             for (const side of [-1, 1]) {
-                // Quadril mais robusto
-                const hip = new THREE.Mesh(new THREE.SphereGeometry(0.23, 16, 14), bodyMaterial);
-                hip.position.set(0.34 * side, 0.88, 0);
-                hip.scale.set(1, 1.15, 0.9);
+                // Quadril (garupa)
+                const hip = new THREE.Mesh(new THREE.SphereGeometry(0.24, 16, 14), bodyMaterial);
+                hip.position.set(-0.4 * side, 1.05, -0.1);
+                hip.scale.set(1, 1.2, 0.95);
                 group.add(hip);
 
-                // Coxa muito musculada
-                const thigh = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.28, 1.08, 26), armMaterial);
-                thigh.position.set(0.36 * side, 0.32, 0);
-                thigh.rotation.x = 0.12;
+                // Coxa traseira (muito musculada)
+                const thigh = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.26, 1.05, 26), armMaterial);
+                thigh.position.set(-0.42 * side, 0.55, -0.08);
+                thigh.rotation.z = -side * Math.PI / 12;
                 group.add(thigh);
 
-                // Quadríceps muito definido
+                // Quadríceps traseiro definido
                 const quad = new THREE.Mesh(new THREE.SphereGeometry(0.19, 16, 14), darkBodyMaterial);
-                quad.position.set(0.37 * side, 0.45, 0.1);
-                quad.scale.set(1, 1.5, 0.75);
+                quad.position.set(-0.43 * side, 0.7, 0.05);
+                quad.scale.set(1, 1.4, 0.8);
                 group.add(quad);
 
-                // Joelho
-                const knee = new THREE.Mesh(new THREE.SphereGeometry(0.19, 14, 12), armMaterial);
-                knee.position.set(0.39 * side, -0.21, 0);
+                // Joelho traseiro
+                const knee = new THREE.Mesh(new THREE.SphereGeometry(0.18, 14, 12), armMaterial);
+                knee.position.set(-0.45 * side, 0.05, -0.05);
                 knee.scale.set(1, 0.95, 0.9);
                 group.add(knee);
 
-                // Canela musculada
-                const shin = new THREE.Mesh(new THREE.CylinderGeometry(0.21, 0.24, 0.92, 26), armMaterial);
-                shin.position.set(0.42 * side, -0.65, 0);
-                shin.rotation.x = -0.06;
+                // Canela traseira (muito musculada)
+                const shin = new THREE.Mesh(new THREE.CylinderGeometry(0.20, 0.23, 0.98, 26), armMaterial);
+                shin.position.set(-0.48 * side, -0.45, 0);
+                shin.rotation.z = -side * Math.PI / 20;
                 group.add(shin);
 
-                // Tornozelo
-                const ankle = new THREE.Mesh(new THREE.SphereGeometry(0.15, 12, 10), armMaterial);
-                ankle.position.set(0.43 * side, -1.08, 0.06);
-                group.add(ankle);
+                // Tornozelo traseiro (garrão)
+                const hock = new THREE.Mesh(new THREE.SphereGeometry(0.16, 12, 10), armMaterial);
+                hock.position.set(-0.5 * side, -0.95, 0.05);
+                group.add(hock);
 
-                // Casco de cavalo muito mais realista
-                const hoof = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.2, 0.48, 12), hoofMaterial);
-                hoof.position.set(0.44 * side, -1.26, 0.18);
-                hoof.rotation.x = Math.PI / 14;
-                group.add(hoof);
+                // Casco traseiro (mais alongado que o dianteiro)
+                const hindHoof = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.2, 0.5, 12), hoofMaterial);
+                hindHoof.position.set(-0.52 * side, -1.22, 0.18);
+                hindHoof.rotation.x = Math.PI / 14;
+                group.add(hindHoof);
                 
-                // Detalhe do casco - parte frontal
-                const hoofFront = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.18, 0.15, 8), hoofMaterial);
-                hoofFront.position.set(0.44 * side, -1.24, 0.38);
-                hoofFront.rotation.x = Math.PI / 10;
-                group.add(hoofFront);
+                // Detalhe do casco traseiro - parte frontal
+                const hindHoofFront = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.18, 0.15, 8), hoofMaterial);
+                hindHoofFront.position.set(-0.52 * side, -1.2, 0.4);
+                hindHoofFront.rotation.x = Math.PI / 10;
+                group.add(hindHoofFront);
             }
 
             group.traverse((obj) => {
